@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dreadbox Alecto - 3 Voice Analog Percussion Synthesizer</title>
+    <title>Dreadbox Alecto - 4 Voice Analog Percussion Synthesizer</title>
     <style>
         :root {
             --bg-color: #121417;
@@ -43,7 +43,7 @@
             border: 2px solid var(--panel-border);
             border-radius: 12px;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1350px;
             padding: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
         }
@@ -101,74 +101,21 @@
             box-shadow: 0 0 12px var(--accent-glow);
         }
 
-        /* Top Display & Oscilloscope */
-        .top-display-section {
+        /* Voices Grid Layout (4 Tracce) */
+        .voices-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             margin-bottom: 20px;
         }
 
-        @media(max-width: 850px) {
-            .top-display-section {
-                grid-template-columns: 1fr;
+        @media(max-width: 1200px) {
+            .voices-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        .scope-box, .presets-box {
-            background: #15171c;
-            border: 1px solid var(--panel-border);
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .scope-box h3, .presets-box h3 {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-        }
-
-        canvas {
-            width: 100%;
-            height: 70px;
-            background: #0b0d10;
-            border-radius: 4px;
-            display: block;
-        }
-
-        .preset-buttons {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-        }
-
-        .preset-btn {
-            background: #22262f;
-            border: 1px solid #323844;
-            color: var(--text-color);
-            padding: 6px;
-            font-size: 0.7rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .preset-btn:hover {
-            background: var(--accent-orange);
-            color: #fff;
-        }
-
-        /* Voices Grid Layout */
-        .voices-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        @media(max-width: 950px) {
+        @media(max-width: 650px) {
             .voices-grid {
                 grid-template-columns: 1fr;
             }
@@ -193,7 +140,7 @@
         }
 
         .voice-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--accent-orange);
             text-transform: uppercase;
@@ -235,7 +182,6 @@
             justify-content: center;
             box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.2);
             position: relative;
-            transition: transform 0.05s linear;
         }
 
         .knob::after {
@@ -255,10 +201,11 @@
             width: 2px;
             height: 16px;
             background: #fff;
-            transform: translateX(-50%);
+            transform: translateX(-50%) rotate(var(--pointer-deg, 0deg));
             transform-origin: bottom center;
             z-index: 2;
             border-radius: 1px;
+            transition: transform 0.05s linear;
         }
 
         .knob-label {
@@ -308,7 +255,7 @@
         .led-strip {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
-            gap: 4px;
+            gap: 3px;
             background: #0d0f13;
             padding: 6px;
             border-radius: 4px;
@@ -352,13 +299,14 @@
             flex-wrap: wrap;
         }
 
-        .select-synth {
-            background: #232833;
-            color: #fff;
+        .preset-btn {
+            background: #22262f;
             border: 1px solid #323844;
-            padding: 6px 12px;
+            color: var(--text-color);
+            padding: 2px 6px;
+            font-size: 0.65rem;
             border-radius: 4px;
-            font-size: 0.75rem;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -366,40 +314,22 @@
 
 <div class="synth-container">
     <header>
-        <h1>Dreadbox <span>Alecto</span> <span style="font-size:0.7rem; color:var(--text-dim);">3-Voice Analog Percussion</span></h1>
+        <h1>Dreadbox <span>Alecto</span> <span style="font-size:0.7rem; color:var(--text-dim);">4-Voice Analog Percussion</span></h1>
         <div class="master-controls">
             <button id="playBtn" class="btn-synth">▶ Play / Stop</button>
         </div>
     </header>
 
-    <!-- Top Display & Oscilloscope -->
-    <div class="top-display-section">
-        <div class="scope-box">
-            <h3>Master Output Oscilloscope</h3>
-            <canvas id="scopeCanvas"></canvas>
-        </div>
-        <div class="presets-box">
-            <h3>Factory Presets</h3>
-            <div class="preset-buttons">
-                <button class="preset-btn" onclick="loadPreset(1)">Techno Kick & Clap</button>
-                <button class="preset-btn" onclick="loadPreset(2)">Electro Poly</button>
-                <button class="preset-btn" onclick="loadPreset(3)">Industrial Beats</button>
-                <button class="preset-btn" onclick="loadPreset(4)">Minimal Groove</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3 Voices Layout -->
+    <!-- 4 Voices Layout -->
     <div class="voices-grid">
 
-        <!-- VOICE 1: KICK / BASS -->
+        <!-- VOICE 1: KICK / BASS 1 -->
         <div class="voice-strip">
             <div class="voice-header">
-                <span class="voice-title">Voice 1 (Kick / Bass)</span>
-                <button id="v1Mute" class="preset-btn" style="padding:2px 6px;" onclick="toggleMute(0)">MUTE</button>
+                <span class="voice-title">Voice 1 (Kick)</span>
+                <button id="v1Mute" class="preset-btn" onclick="toggleMute(0)">MUTE</button>
             </div>
             <div class="controls-grid">
-                <!-- Tune -->
                 <div class="knob-control">
                     <span class="knob-label">Tune</span>
                     <div class="knob-container" data-param="v1_tune" data-min="30" data-max="200" data-step="1" data-val="65">
@@ -407,7 +337,6 @@
                     </div>
                     <span class="knob-value" id="val_v1_tune">65 Hz</span>
                 </div>
-                <!-- Morph / Wave -->
                 <div class="knob-control">
                     <span class="knob-label">Wave Morph</span>
                     <div class="knob-container" data-param="v1_morph" data-min="0" data-max="3" data-step="0.01" data-val="0">
@@ -415,7 +344,6 @@
                     </div>
                     <span class="knob-value" id="val_v1_morph">Sine</span>
                 </div>
-                <!-- Pitch Decay -->
                 <div class="knob-control">
                     <span class="knob-label">Pitch Env</span>
                     <div class="knob-container" data-param="v1_pdecay" data-min="0.05" data-max="1.0" data-step="0.01" data-val="0.3">
@@ -423,7 +351,6 @@
                     </div>
                     <span class="knob-value" id="val_v1_pdecay">0.30s</span>
                 </div>
-                <!-- Filter Cutoff -->
                 <div class="knob-control">
                     <span class="knob-label">Filter Cut</span>
                     <div class="knob-container" data-param="v1_cutoff" data-min="100" data-max="8000" data-step="10" data-val="2500">
@@ -431,7 +358,6 @@
                     </div>
                     <span class="knob-value" id="val_v1_cutoff">2500 Hz</span>
                 </div>
-                <!-- Click / Noise -->
                 <div class="knob-control">
                     <span class="knob-label">Click Level</span>
                     <div class="knob-container" data-param="v1_click" data-min="0" data-max="1" data-step="0.01" data-val="0.4">
@@ -439,7 +365,6 @@
                     </div>
                     <span class="knob-value" id="val_v1_click">40%</span>
                 </div>
-                <!-- Master Decay -->
                 <div class="knob-control">
                     <span class="knob-label">Decay</span>
                     <div class="knob-container" data-param="v1_decay" data-min="0.1" data-max="2.0" data-step="0.01" data-val="0.6">
@@ -448,16 +373,14 @@
                     <span class="knob-value" id="val_v1_decay">0.60s</span>
                 </div>
             </div>
-
-            <!-- Sequencer & LED Strip (Tipo 1: Kick & Bass) -->
             <div class="seq-section">
                 <div class="seq-header">
-                    <span>Seq 1 (Kick / Bass)</span>
+                    <span>Seq 1</span>
                     <span class="seq-type-badge">Tipo 1</span>
                 </div>
                 <div class="knob-control" style="width: 100%;">
-                    <span class="knob-label">Pattern Knob (0 - 10)</span>
-                    <div class="knob-container" data-param="seq1_pat" data-min="0" data-max="10" data-step="1" data-val="4" style="width:38px; height:38px;">
+                    <span class="knob-label">Pattern (0 - 10)</span>
+                    <div class="knob-container" data-param="seq1_pat" data-min="0" data-max="10" data-step="1" data-val="4" style="width:36px; height:36px;">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
                     <span class="knob-value" id="val_seq1_pat">Val: 4</span>
@@ -469,75 +392,67 @@
             </div>
         </div>
 
-        <!-- VOICE 2: TOM / PERC -->
+        <!-- VOICE 2: KICK / BASS 2 -->
         <div class="voice-strip">
             <div class="voice-header">
-                <span class="voice-title">Voice 2 (Tom / Perc)</span>
-                <button id="v2Mute" class="preset-btn" style="padding:2px 6px;" onclick="toggleMute(1)">MUTE</button>
+                <span class="voice-title">Voice 2 (Bass)</span>
+                <button id="v2Mute" class="preset-btn" onclick="toggleMute(1)">MUTE</button>
             </div>
             <div class="controls-grid">
-                <!-- Tune -->
                 <div class="knob-control">
                     <span class="knob-label">Tune</span>
-                    <div class="knob-container" data-param="v2_tune" data-min="80" data-max="800" data-step="1" data-val="220">
+                    <div class="knob-container" data-param="v2_tune" data-min="30" data-max="200" data-step="1" data-val="90">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_v2_tune">220 Hz</span>
+                    <span class="knob-value" id="val_v2_tune">90 Hz</span>
                 </div>
-                <!-- Noise Mix -->
                 <div class="knob-control">
-                    <span class="knob-label">Noise Mix</span>
-                    <div class="knob-container" data-param="v2_noise" data-min="0" data-max="1" data-step="0.01" data-val="0.5">
+                    <span class="knob-label">Wave Morph</span>
+                    <div class="knob-container" data-param="v2_morph" data-min="0" data-max="3" data-step="0.01" data-val="1">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_v2_noise">50%</span>
+                    <span class="knob-value" id="val_v2_morph">Triangle</span>
                 </div>
-                <!-- Pitch Env -->
                 <div class="knob-control">
                     <span class="knob-label">Pitch Env</span>
-                    <div class="knob-container" data-param="v2_pdecay" data-min="0.02" data-max="0.5" data-step="0.01" data-val="0.15">
+                    <div class="knob-container" data-param="v2_pdecay" data-min="0.05" data-max="1.0" data-step="0.01" data-val="0.2">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_v2_pdecay">0.15s</span>
+                    <span class="knob-value" id="val_v2_pdecay">0.20s</span>
                 </div>
-                <!-- Filter Cutoff -->
                 <div class="knob-control">
                     <span class="knob-label">Filter Cut</span>
-                    <div class="knob-container" data-param="v2_cutoff" data-min="200" data-max="10000" data-step="10" data-val="3500">
+                    <div class="knob-container" data-param="v2_cutoff" data-min="100" data-max="8000" data-step="10" data-val="3500">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
                     <span class="knob-value" id="val_v2_cutoff">3500 Hz</span>
                 </div>
-                <!-- Resonance -->
                 <div class="knob-control">
-                    <span class="knob-label">Resonance</span>
-                    <div class="knob-container" data-param="v2_reso" data-min="1" data-max="20" data-step="0.1" data-val="4">
+                    <span class="knob-label">Click Level</span>
+                    <div class="knob-container" data-param="v2_click" data-min="0" data-max="1" data-step="0.01" data-val="0.2">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_v2_reso">4.0</span>
+                    <span class="knob-value" id="val_v2_click">20%</span>
                 </div>
-                <!-- Master Decay -->
                 <div class="knob-control">
                     <span class="knob-label">Decay</span>
-                    <div class="knob-container" data-param="v2_decay" data-min="0.05" data-max="1.0" data-step="0.01" data-val="0.3">
+                    <div class="knob-container" data-param="v2_decay" data-min="0.1" data-max="2.0" data-step="0.01" data-val="0.4">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_v2_decay">0.30s</span>
+                    <span class="knob-value" id="val_v2_decay">0.40s</span>
                 </div>
             </div>
-
-            <!-- Sequencer & LED Strip (Tipo 2: Tom / Perc / Piattini) -->
             <div class="seq-section">
                 <div class="seq-header">
-                    <span>Seq 2 (Tom / Perc)</span>
-                    <span class="seq-type-badge">Tipo 2</span>
+                    <span>Seq 2</span>
+                    <span class="seq-type-badge">Tipo 1</span>
                 </div>
                 <div class="knob-control" style="width: 100%;">
-                    <span class="knob-label">Pattern Knob (0 - 10)</span>
-                    <div class="knob-container" data-param="seq2_pat" data-min="0" data-max="10" data-step="1" data-val="2" style="width:38px; height:38px;">
+                    <span class="knob-label">Pattern (0 - 10)</span>
+                    <div class="knob-container" data-param="seq2_pat" data-min="0" data-max="10" data-step="1" data-val="3" style="width:36px; height:36px;">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_seq2_pat">Val: 2</span>
+                    <span class="knob-value" id="val_seq2_pat">Val: 3</span>
                 </div>
                 <div class="led-strip" id="leds_1">
                     <div class="led" id="l1_0"></div><div class="led" id="l1_1"></div><div class="led" id="l1_2"></div><div class="led" id="l1_3"></div>
@@ -546,80 +461,140 @@
             </div>
         </div>
 
-        <!-- VOICE 3: HI-HAT / METALLIC -->
+        <!-- VOICE 3: PERC / TOM -->
         <div class="voice-strip">
             <div class="voice-header">
-                <span class="voice-title">Voice 3 (Hi-Hat / Metal)</span>
-                <button id="v3Mute" class="preset-btn" style="padding:2px 6px;" onclick="toggleMute(2)">MUTE</button>
+                <span class="voice-title">Voice 3 (Tom)</span>
+                <button id="v3Mute" class="preset-btn" onclick="toggleMute(2)">MUTE</button>
             </div>
             <div class="controls-grid">
-                <!-- Metal Tune -->
                 <div class="knob-control">
-                    <span class="knob-label">Metal Tune</span>
-                    <div class="knob-container" data-param="v3_tune" data-min="300" data-max="3000" data-step="10" data-val="1200">
+                    <span class="knob-label">Tune</span>
+                    <div class="knob-container" data-param="v3_tune" data-min="80" data-max="800" data-step="1" data-val="220">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_v3_tune">1200 Hz</span>
+                    <span class="knob-value" id="val_v3_tune">220 Hz</span>
                 </div>
-                <!-- FM Amount -->
-                <div class="knob-container" style="display:none"></div>
                 <div class="knob-control">
-                    <span class="knob-label">Metallic FM</span>
-                    <div class="knob-container" data-param="v3_fm" data-min="0" data-max="1000" data-step="5" data-val="450">
+                    <span class="knob-label">Noise Mix</span>
+                    <div class="knob-container" data-param="v3_noise" data-min="0" data-max="1" data-step="0.01" data-val="0.5">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_v3_fm">450 Hz</span>
+                    <span class="knob-value" id="val_v3_noise">50%</span>
                 </div>
-                <!-- Highpass Cutoff -->
                 <div class="knob-control">
-                    <span class="knob-label">HP Filter</span>
-                    <div class="knob-container" data-param="v3_hp" data-min="500" data-max="10000" data-step="50" data-val="5000">
+                    <span class="knob-label">Pitch Env</span>
+                    <div class="knob-container" data-param="v3_pdecay" data-min="0.02" data-max="0.5" data-step="0.01" data-val="0.15">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_v3_hp">5000 Hz</span>
+                    <span class="knob-value" id="val_v3_pdecay">0.15s</span>
                 </div>
-                <!-- Resonance -->
+                <div class="knob-control">
+                    <span class="knob-label">Filter Cut</span>
+                    <div class="knob-container" data-param="v3_cutoff" data-min="200" data-max="10000" data-step="10" data-val="3500">
+                        <div class="knob"><div class="knob-pointer"></div></div>
+                    </div>
+                    <span class="knob-value" id="val_v3_cutoff">3500 Hz</span>
+                </div>
                 <div class="knob-control">
                     <span class="knob-label">Resonance</span>
-                    <div class="knob-container" data-param="v3_reso" data-min="1" data-max="15" data-step="0.1" data-val="3">
+                    <div class="knob-container" data-param="v3_reso" data-min="1" data-max="20" data-step="0.1" data-val="4">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_v3_reso">3.0</span>
+                    <span class="knob-value" id="val_v3_reso">4.0</span>
                 </div>
-                <!-- Accent / Drive -->
-                <div class="knob-control">
-                    <span class="knob-label">Drive</span>
-                    <div class="knob-container" data-param="v3_drive" data-min="1" data-max="10" data-step="0.1" data-val="2.5">
-                        <div class="knob"><div class="knob-pointer"></div></div>
-                    </div>
-                    <span class="knob-value" id="val_v3_drive">2.5</span>
-                </div>
-                <!-- Master Decay -->
                 <div class="knob-control">
                     <span class="knob-label">Decay</span>
-                    <div class="knob-container" data-param="v3_decay" data-min="0.02" data-max="0.6" data-step="0.01" data-val="0.12">
+                    <div class="knob-container" data-param="v3_decay" data-min="0.05" data-max="1.0" data-step="0.01" data-val="0.3">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_v3_decay">0.12s</span>
+                    <span class="knob-value" id="val_v3_decay">0.30s</span>
                 </div>
             </div>
-
-            <!-- Sequencer & LED Strip (Tipo 2: Tom / Perc / Piattini) -->
             <div class="seq-section">
                 <div class="seq-header">
-                    <span>Seq 3 (Hi-Hat / Metal)</span>
+                    <span>Seq 3</span>
                     <span class="seq-type-badge">Tipo 2</span>
                 </div>
                 <div class="knob-control" style="width: 100%;">
-                    <span class="knob-label">Pattern Knob (0 - 10)</span>
-                    <div class="knob-container" data-param="seq3_pat" data-min="0" data-max="10" data-step="1" data-val="3" style="width:38px; height:38px;">
+                    <span class="knob-label">Pattern (0 - 10)</span>
+                    <div class="knob-container" data-param="seq3_pat" data-min="0" data-max="10" data-step="1" data-val="2" style="width:36px; height:36px;">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
-                    <span class="knob-value" id="val_seq3_pat">Val: 3</span>
+                    <span class="knob-value" id="val_seq3_pat">Val: 2</span>
                 </div>
                 <div class="led-strip" id="leds_2">
                     <div class="led" id="l2_0"></div><div class="led" id="l2_1"></div><div class="led" id="l2_2"></div><div class="led" id="l2_3"></div>
                     <div class="led" id="l2_4"></div><div class="led" id="l2_5"></div><div class="led" id="l2_6"></div><div class="led" id="l2_7"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VOICE 4: HI-HAT / METAL -->
+        <div class="voice-strip">
+            <div class="voice-header">
+                <span class="voice-title">Voice 4 (Hi-Hat)</span>
+                <button id="v4Mute" class="preset-btn" onclick="toggleMute(3)">MUTE</button>
+            </div>
+            <div class="controls-grid">
+                <div class="knob-control">
+                    <span class="knob-label">Metal Tune</span>
+                    <div class="knob-container" data-param="v4_tune" data-min="300" data-max="3000" data-step="10" data-val="1200">
+                        <div class="knob"><div class="knob-pointer"></div></div>
+                    </div>
+                    <span class="knob-value" id="val_v4_tune">1200 Hz</span>
+                </div>
+                <div class="knob-control">
+                    <span class="knob-label">Metallic FM</span>
+                    <div class="knob-container" data-param="v4_fm" data-min="0" data-max="1000" data-step="5" data-val="450">
+                        <div class="knob"><div class="knob-pointer"></div></div>
+                    </div>
+                    <span class="knob-value" id="val_v4_fm">450 Hz</span>
+                </div>
+                <div class="knob-control">
+                    <span class="knob-label">HP Filter</span>
+                    <div class="knob-container" data-param="v4_hp" data-min="500" data-max="10000" data-step="50" data-val="5000">
+                        <div class="knob"><div class="knob-pointer"></div></div>
+                    </div>
+                    <span class="knob-value" id="val_v4_hp">5000 Hz</span>
+                </div>
+                <div class="knob-control">
+                    <span class="knob-label">Resonance</span>
+                    <div class="knob-container" data-param="v4_reso" data-min="1" data-max="15" data-step="0.1" data-val="3">
+                        <div class="knob"><div class="knob-pointer"></div></div>
+                    </div>
+                    <span class="knob-value" id="val_v4_reso">3.0</span>
+                </div>
+                <div class="knob-control">
+                    <span class="knob-label">Drive</span>
+                    <div class="knob-container" data-param="v4_drive" data-min="1" data-max="10" data-step="0.1" data-val="2.5">
+                        <div class="knob"><div class="knob-pointer"></div></div>
+                    </div>
+                    <span class="knob-value" id="val_v4_drive">2.5</span>
+                </div>
+                <div class="knob-control">
+                    <span class="knob-label">Decay</span>
+                    <div class="knob-container" data-param="v4_decay" data-min="0.02" data-max="0.6" data-step="0.01" data-val="0.12">
+                        <div class="knob"><div class="knob-pointer"></div></div>
+                    </div>
+                    <span class="knob-value" id="val_v4_decay">0.12s</span>
+                </div>
+            </div>
+            <div class="seq-section">
+                <div class="seq-header">
+                    <span>Seq 4</span>
+                    <span class="seq-type-badge">Tipo 2</span>
+                </div>
+                <div class="knob-control" style="width: 100%;">
+                    <span class="knob-label">Pattern (0 - 10)</span>
+                    <div class="knob-container" data-param="seq4_pat" data-min="0" data-max="10" data-step="1" data-val="3" style="width:36px; height:36px;">
+                        <div class="knob"><div class="knob-pointer"></div></div>
+                    </div>
+                    <span class="knob-value" id="val_seq4_pat">Val: 3</span>
+                </div>
+                <div class="led-strip" id="leds_3">
+                    <div class="led" id="l3_0"></div><div class="led" id="l3_1"></div><div class="led" id="l3_2"></div><div class="led" id="l3_3"></div>
+                    <div class="led" id="l3_4"></div><div class="led" id="l3_5"></div><div class="led" id="l3_6"></div><div class="led" id="l3_7"></div>
                 </div>
             </div>
         </div>
@@ -645,7 +620,7 @@
             </div>
         </div>
         <div style="font-size:0.7rem; color:var(--text-dim);">
-            Dreadbox Alecto Browser Clone • Web Audio API
+            Dreadbox Alecto 4-Voice Browser Clone • Web Audio API
         </div>
     </div>
 </div>
@@ -654,16 +629,16 @@
     // --- STATE & PARAMETERS ---
     const params = {
         v1_tune: 65, v1_morph: 0, v1_pdecay: 0.3, v1_cutoff: 2500, v1_click: 0.4, v1_decay: 0.6,
-        v2_tune: 220, v2_noise: 0.5, v2_pdecay: 0.15, v2_cutoff: 3500, v2_reso: 4.0, v2_decay: 0.3,
-        v3_tune: 1200, v3_fm: 450, v3_hp: 5000, v3_reso: 3.0, v3_drive: 2.5, v3_decay: 0.12,
-        seq1_pat: 4, seq2_pat: 2, seq3_pat: 3,
+        v2_tune: 90, v2_morph: 1, v2_pdecay: 0.2, v2_cutoff: 3500, v2_click: 0.2, v2_decay: 0.4,
+        v3_tune: 220, v3_noise: 0.5, v3_pdecay: 0.15, v3_cutoff: 3500, v3_reso: 4.0, v3_decay: 0.3,
+        v4_tune: 1200, v4_fm: 450, v4_hp: 5000, v4_reso: 3.0, v4_drive: 2.5, v4_decay: 0.12,
+        seq1_pat: 4, seq2_pat: 3, seq3_pat: 2, seq4_pat: 3,
         master_bpm: 124, master_vol: 0.8
     };
 
-    const mutes = [false, false, false];
+    const mutes = [false, false, false, false];
 
-    // --- ALGORITHMIC PATTERNS DEFINITION ---
-    // Tipo 1: Kick & Bass (Indici 0-10)
+    // --- PATTERNS ---
     const patternsType1 = {
         0: [0,0,0,0, 0,0,0,0],
         1: [1,0,0,0, 0,0,0,0],
@@ -678,7 +653,6 @@
         10:[1,1,1,1, 1,1,1,1]
     };
 
-    // Tipo 2: Tom, Percussioni e Piattini (Indici 0-10)
     const patternsType2 = {
         0: [0,0,0,0, 0,0,0,0],
         1: [0,0,0,0, 1,0,0,0],
@@ -693,10 +667,9 @@
         10:[1,0,1,1, 0,1,1,1]
     };
 
-    // --- AUDIO CONTEXT & ENGINE ---
+    // --- AUDIO ENGINE ---
     let audioCtx = null;
     let masterGain = null;
-    let analyser = null;
     let isPlaying = false;
     let currentStep = 0;
     let nextNoteTime = 0.0;
@@ -706,34 +679,20 @@
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             masterGain = audioCtx.createGain();
-            analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 512;
-
             masterGain.gain.value = params.master_vol;
-            masterGain.connect(analyser);
-            analyser.connect(audioCtx.destination);
+            masterGain.connect(audioCtx.destination);
         }
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
     }
 
-    // --- SOUND GENERATORS ---
-    function triggerVoice1(time) {
-        if (mutes[0]) return;
-        const tune = params.v1_tune;
-        const morph = params.v1_morph;
-        const pdecay = params.v1_pdecay;
-        const cutoff = params.v1_cutoff;
-        const clickLevel = params.v1_click;
-        const decay = params.v1_decay;
-
-        // Oscillatore principale pitch inviluppo
+    // Sound Generator for Kick/Bass (Voice 1 & 2)
+    function triggerKickBass(time, tune, morph, pdecay, cutoff, clickLevel, decay) {
         const osc = audioCtx.createOscillator();
         const filter = audioCtx.createBiquadFilter();
         const vca = audioCtx.createGain();
 
-        // Waveform morphing approx
         if (morph < 1.0) osc.type = 'sine';
         else if (morph < 2.0) osc.type = 'triangle';
         else if (morph < 3.0) osc.type = 'sawtooth';
@@ -757,7 +716,6 @@
         osc.start(time);
         osc.stop(time + decay + 0.05);
 
-        // Transient Click
         if (clickLevel > 0.05) {
             const bufferSize = audioCtx.sampleRate * 0.015;
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -783,22 +741,20 @@
         }
     }
 
-    function triggerVoice2(time) {
-        if (mutes[1]) return;
-        const tune = params.v2_tune;
-        const noiseMix = params.v2_noise;
-        const pdecay = params.v2_pdecay;
-        const cutoff = params.v2_cutoff;
-        const reso = params.v2_reso;
-        const decay = params.v2_decay;
+    // Sound Generator for Tom/Perc (Voice 3)
+    function triggerTom(time) {
+        const tune = params.v3_tune;
+        const noiseMix = params.v3_noise;
+        const pdecay = params.v3_pdecay;
+        const cutoff = params.v3_cutoff;
+        const reso = params.v3_reso;
+        const decay = params.v3_decay;
 
-        // Tone Oscillator
         const osc = audioCtx.createOscillator();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(tune * 2, time);
         osc.frequency.exponentialRampToValueAtTime(tune, time + pdecay);
 
-        // Noise Generator
         const bufferSize = audioCtx.sampleRate * decay;
         const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
         const data = buffer.getChannelData(0);
@@ -829,15 +785,14 @@
         osc.stop(time + decay + 0.05);
     }
 
-    function triggerVoice3(time) {
-        if (mutes[2]) return;
-        const tune = params.v3_tune;
-        const fmAmount = params.v3_fm;
-        const hpCutoff = params.v3_hp;
-        const reso = params.v3_reso;
-        const decay = params.v3_decay;
+    // Sound Generator for Hi-Hat/Metal (Voice 4)
+    function triggerMetal(time) {
+        const tune = params.v4_tune;
+        const fmAmount = params.v4_fm;
+        const hpCutoff = params.v4_hp;
+        const reso = params.v4_reso;
+        const decay = params.v4_decay;
 
-        // Metallic multi-square FM synthesis
         const mod = audioCtx.createOscillator();
         const modGain = audioCtx.createGain();
         const carrier = audioCtx.createOscillator();
@@ -871,24 +826,24 @@
         carrier.stop(time + decay + 0.05);
     }
 
-    // --- SCHEDULER & CLOCK LOOP ---
+    // --- SEQUENCER SCHEDULER ---
     function nextNote() {
         const secondsPerBeat = 60.0 / params.master_bpm;
-        nextNoteTime += secondsPerBeat / 4; // 16th note subdivision
+        nextNoteTime += secondsPerBeat / 4;
         currentStep = (currentStep + 1) % 8;
     }
 
     function scheduleNote(stepIndex, time) {
-        // Retrieve patterns from current knob values
         const pat1 = patternsType1[Math.round(params.seq1_pat)] || patternsType1[0];
-        const pat2 = patternsType2[Math.round(params.seq2_pat)] || patternsType2[0];
+        const pat2 = patternsType1[Math.round(params.seq2_pat)] || patternsType1[0];
         const pat3 = patternsType2[Math.round(params.seq3_pat)] || patternsType2[0];
+        const pat4 = patternsType2[Math.round(params.seq4_pat)] || patternsType2[0];
 
-        if (pat1[stepIndex]) triggerVoice1(time);
-        if (pat2[stepIndex]) triggerVoice2(time);
-        if (pat3[stepIndex]) triggerVoice3(time);
+        if (!mutes[0] && pat1[stepIndex]) triggerKickBass(time, params.v1_tune, params.v1_morph, params.v1_pdecay, params.v1_cutoff, params.v1_click, params.v1_decay);
+        if (!mutes[1] && pat2[stepIndex]) triggerKickBass(time, params.v2_tune, params.v2_morph, params.v2_pdecay, params.v2_cutoff, params.v2_click, params.v2_decay);
+        if (!mutes[2] && pat3[stepIndex]) triggerTom(time);
+        if (!mutes[3] && pat4[stepIndex]) triggerMetal(time);
 
-        // Visual update on main thread
         setTimeout(() => {
             updateLEDs(stepIndex);
         }, Math.max(0, (time - audioCtx.currentTime) * 1000));
@@ -934,13 +889,14 @@
         }
     }
 
-    // --- LED VISUALIZER ---
+    // --- LED VIEWS ---
     function updateLEDs(activeStep) {
-        for (let v = 0; v < 3; v++) {
+        for (let v = 0; v < 4; v++) {
             let pat = [];
             if (v === 0) pat = patternsType1[Math.round(params.seq1_pat)] || patternsType1[0];
-            if (v === 1) pat = patternsType2[Math.round(params.seq2_pat)] || patternsType2[0];
+            if (v === 1) pat = patternsType1[Math.round(params.seq2_pat)] || patternsType1[0];
             if (v === 2) pat = patternsType2[Math.round(params.seq3_pat)] || patternsType2[0];
+            if (v === 3) pat = patternsType2[Math.round(params.seq4_pat)] || patternsType2[0];
 
             for (let s = 0; s < 8; s++) {
                 const led = document.getElementById(`l${v}_${s}`);
@@ -955,7 +911,7 @@
     }
 
     function clearAllLEDs() {
-        for (let v = 0; v < 3; v++) {
+        for (let v = 0; v < 4; v++) {
             for (let s = 0; s < 8; s++) {
                 const led = document.getElementById(`l${v}_${s}`);
                 if (led) led.className = 'led';
@@ -963,60 +919,11 @@
         }
     }
 
-    // Refresh static LED view when knobs change
     function refreshLEDPreview() {
         updateLEDs(-1);
     }
 
-    // --- OSCILLOSCOPE CANVAS ---
-    const canvas = document.getElementById('scopeCanvas');
-    const canvasCtx = canvas.getContext('2d');
-
-    function drawScope() {
-        requestAnimationFrame(drawScope);
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-
-        canvasCtx.fillStyle = '#0b0d10';
-        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-
-        if (!analyser || !isPlaying) {
-            canvasCtx.strokeStyle = '#222833';
-            canvasCtx.lineWidth = 1;
-            canvasCtx.beginPath();
-            canvasCtx.moveTo(0, canvas.height / 2);
-            canvasCtx.lineTo(canvas.width, canvas.height / 2);
-            canvasCtx.stroke();
-            return;
-        }
-
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-        analyser.getByteTimeDomainData(dataArray);
-
-        canvasCtx.lineWidth = 2;
-        canvasCtx.strokeStyle = '#ff6b35';
-        canvasCtx.beginPath();
-
-        const sliceWidth = canvas.width * 1.0 / bufferLength;
-        let x = 0;
-
-        for (let i = 0; i < bufferLength; i++) {
-            const v = dataArray[i] / 128.0;
-            const y = v * canvas.height / 2;
-
-            if (i === 0) canvasCtx.moveTo(x, y);
-            else canvasCtx.lineTo(x, y);
-
-            x += sliceWidth;
-        }
-
-        canvasCtx.lineTo(canvas.width, canvas.height / 2);
-        canvasCtx.stroke();
-    }
-    drawScope();
-
-    // --- INTERACTIVE KNOBS SYSTEM ---
+    // --- KNOBS INTERACTION ---
     document.querySelectorAll('.knob-container').forEach(container => {
         const param = container.getAttribute('data-param');
         const min = parseFloat(container.getAttribute('data-min'));
@@ -1025,12 +932,18 @@
         let val = parseFloat(container.getAttribute('data-val'));
 
         const knob = container.querySelector('.knob');
+        const pointer = container.querySelector('.knob-pointer');
         const valDisplay = document.getElementById(`val_${param}`);
 
         function updateKnobVisual() {
             const percent = (val - min) / (max - min);
             const deg = percent * 270;
+            const pointerDeg = deg - 135; // Centra la tacca bianca sull'arco
+            
             knob.style.setProperty('--deg', `${deg}deg`);
+            if (pointer) {
+                pointer.style.setProperty('--pointer-deg', `${pointerDeg}deg`);
+            }
 
             if (valDisplay) {
                 if (param.includes('tune') || param.includes('cutoff') || param.includes('hp') || param.includes('fm')) {
@@ -1077,7 +990,6 @@
             if (newVal < min) newVal = min;
             if (newVal > max) newVal = max;
 
-            // Round to step
             val = Math.round(newVal / step) * step;
             params[param] = val;
             updateKnobVisual();
@@ -1101,40 +1013,6 @@
         container.addEventListener('mousedown', onTouchStart);
         container.addEventListener('touchstart', onTouchStart);
     });
-
-    // --- PRESETS LOADER ---
-    function loadPreset(id) {
-        if (id === 1) { // Techno Kick & Clap
-            params.v1_tune = 55; params.v1_morph = 0; params.v1_pdecay = 0.35; params.v1_cutoff = 1800; params.v1_click = 0.6; params.v1_decay = 0.7;
-            params.v2_tune = 320; params.v2_noise = 0.8; params.v2_pdecay = 0.1; params.v2_cutoff = 4500; params.v2_reso = 6; params.v2_decay = 0.25;
-            params.v3_tune = 2500; params.v3_fm = 700; params.v3_hp = 7000; params.v3_reso = 5; params.v3_drive = 4; params.v3_decay = 0.08;
-            params.seq1_pat = 4; params.seq2_pat = 1; params.seq3_pat = 3; params.master_bpm = 130;
-        } else if (id === 2) { // Electro Poly
-            params.v1_tune = 72; params.v1_morph = 2; params.v1_pdecay = 0.25; params.v1_cutoff = 3200; params.v1_click = 0.3; params.v1_decay = 0.45;
-            params.v2_tune = 180; params.v2_noise = 0.3; params.v2_pdecay = 0.2; params.v2_cutoff = 2800; params.v2_reso = 3; params.v2_decay = 0.4;
-            params.v3_tune = 1500; params.v3_fm = 300; params.v3_hp = 4000; params.v3_reso = 2; params.v3_drive = 2; params.v3_decay = 0.2;
-            params.seq1_pat = 6; params.seq2_pat = 4; params.seq3_pat = 7; params.master_bpm = 120;
-        } else if (id === 3) { // Industrial Beats
-            params.v1_tune = 48; params.v1_morph = 3; params.v1_pdecay = 0.4; params.v1_cutoff = 5000; params.v1_click = 0.9; params.v1_decay = 0.8;
-            params.v2_tune = 450; params.v2_noise = 1.0; params.v2_pdecay = 0.05; params.v2_cutoff = 7000; params.v2_reso = 12; params.v2_decay = 0.15;
-            params.v3_tune = 800; params.v3_fm = 950; params.v3_hp = 2000; params.v3_reso = 10; params.v3_drive = 8; params.v3_decay = 0.15;
-            params.seq1_pat = 8; params.seq2_pat = 5; params.seq3_pat = 10; params.master_bpm = 140;
-        } else if (id === 4) { // Minimal Groove
-            params.v1_tune = 65; params.v1_morph = 0; params.v1_pdecay = 0.2; params.v1_cutoff = 2000; params.v1_click = 0.2; params.v1_decay = 0.5;
-            params.v2_tune = 220; params.v2_noise = 0.4; params.v2_pdecay = 0.15; params.v2_cutoff = 3000; params.v2_reso = 2; params.v2_decay = 0.25;
-            params.v3_tune = 3000; params.v3_fm = 100; params.v3_hp = 6000; params.v3_reso = 1; params.v3_drive = 1; params.v3_decay = 0.06;
-            params.seq1_pat = 3; params.seq2_pat = 2; params.seq3_pat = 3; params.master_bpm = 116;
-        }
-        // Aggiorna tutti i knob visivamente
-        document.querySelectorAll('.knob-container').forEach(container => {
-            const param = container.getAttribute('data-param');
-            if (params[param] !== undefined) {
-                container.setAttribute('data-val', params[param]);
-                // Ridisegna il pomello triggerando la logica o ricaricando la pagina
-            }
-        });
-        location.reload(); // Semplice reload per applicare istantaneamente i valori del preset ai pomelli
-    }
 
     refreshLEDPreview();
 </script>
