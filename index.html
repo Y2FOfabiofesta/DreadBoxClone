@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DREADBOX ALECTO - Dual Polyrhythmic Analog Percussion Synthesizer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        alecto: {
+                            bg: '#0c0d10',
+                            panel: '#16181e',
+                            module: '#1e2129',
+                            border: '#2e3340',
+                            orange: '#ff5500',
+                            teal: '#00e5ff',
+                            purple: '#b846ff',
+                            yellow: '#ffcc00',
+                            green: '#10b981'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'monospace'],
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            background-color: #0c0d10;
+        }
+
+        .knob-container {
+            touch-action: none;
+        }
+
+        .knob-cap {
+            transition: transform 0.04s linear;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.12), 0 4px 10px rgba(0,0,0,0.8);
+        }
+
+        .led-pulse-orange { box-shadow: 0 0 10px #ff5500, 0 0 18px #ff5500; }
+        .led-pulse-teal   { box-shadow: 0 0 10px #00e5ff, 0 0 18px #00e5ff; }
+        .led-pulse-purple { box-shadow: 0 0 10px #b846ff, 0 0 18px #b846ff; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0c0d10; }
+        ::-webkit-scrollbar-thumb { background: #2e3340; border-radius: 3px; }
+    </style>
+</head>
+<body class="text-gray-200 min-h-screen flex flex-col font-sans selection:bg-alecto-orange selection:text-white">
+
+    <!-- TOP HEADER / POWER BAR -->
+    <header class="bg-alecto-panel border-b border-alecto-border py-2.5 px-4 flex items-center justify-between shadow-xl">
+        <div class="flex items-center space-x-3">
+            <div id="power-led" class="w-3.5 h-3.5 rounded-full bg-slate-700 transition-all"></div>
+            <div>
+                <h1 class="text-lg font-black tracking-widest text-white italic uppercase flex items-center space-x-2">
+                    <span>DREADBOX</span>
+                    <span class="text-alecto-orange">ALECTO</span>
+                </h1>
+                <p class="text-[10px] text-gray-400 font-mono tracking-wider">ANALOG PERCUSSION & POLYRHYTHMIC SYNTHESIZER</p>
+            </div>
+        </div>
+
+        <!-- Master Oscilloscope Display -->
+        <div class="hidden md:block w-64 h-11 bg-black/80 rounded border border-alecto-border overflow-hidden relative">
+            <canvas id="scope-canvas" class="w-full h-full block"></canvas>
+            <span class="absolute bottom-0.5 right-1 text-[8px] font-mono text-gray-500">SCOPE / FFT</span>
+        </div>
+        
+        <!-- Controls & Power -->
+        <div class="flex items-center space-x-2">
+            <button id="btn-power" class="px-3.5 py-1.5 rounded bg-alecto-orange hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-wider transition shadow-md active:scale-95 flex items-center space-x-1.5">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2v10m-6.36-6.36a9 9 0 1 0 12.72 0"/></svg>
+                <span id="power-text">AUDIO OFF</span>
+            </button>
+            <button id="btn-play" class="px-4 py-1.5 rounded bg-alecto-green hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-md active:scale-95 flex items-center space-x-1.5 opacity-50 cursor-not-allowed" disabled>
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <span id="play-text">PLAY</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN SYNTHESIZER PANEL -->
+    <main class="flex-1 p-2 md:p-4 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-3.5">
+
+        <!-- LEFT SECTION: SYNTHESIS ENGINE (8 COLS) -->
+        <div class="lg:col-span-8 flex flex-col gap-3.5">
+
+            <!-- MASTER CLOCK & MIX / OVERDRIVE SECTION -->
+            <div class="bg-alecto-panel border border-alecto-border rounded-xl p-3.5 shadow-xl">
+                <div class="text-[11px] font-mono font-bold text-alecto-orange uppercase tracking-widest mb-2.5 flex justify-between items-center border-b border-alecto-border/50 pb-1">
+                    <span>// 01 MASTER CLOCK & DRIVE MIXER</span>
+                    <span id="tempo-display" class="text-white font-mono bg-black/60 px-2 py-0.5 rounded border border-alecto-border">124 BPM</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 items-center">
+                    <!-- BPM Knob -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="bpm" data-min="30" data-max="280" data-val="124" data-step="1">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-orange rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">TEMPO</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-orange">124 BPM</span>
+                    </div>
+
+                    <!-- Master Decay Knob -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="masterDecay" data-min="0.1" data-max="2.5" data-val="0.9" data-step="0.05">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-orange rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">M-DECAY</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-orange">0.90s</span>
+                    </div>
+
+                    <!-- Swing Knob -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="swing" data-min="0" data-max="60" data-val="0" data-step="1">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-yellow rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">SWING</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-yellow">0%</span>
+                    </div>
+
+                    <!-- Voice Blend Knob -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="voiceBlend" data-min="0" data-max="1" data-val="0.5" data-step="0.01">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-white rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">BLEND (T/N)</span>
+                        <span class="knob-val text-[10px] font-mono text-white">50/50</span>
+                    </div>
+
+                    <!-- Drive Saturator Knob -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="driveAmt" data-min="0" data-max="1" data-val="0.25" data-step="0.02">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-red-500 rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">DRIVE</span>
+                        <span class="knob-val text-[10px] font-mono text-red-400">25%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VOICE 1: PITCH & TONE OSCILLATOR -->
+            <div class="bg-alecto-panel border border-alecto-border rounded-xl p-3.5 shadow-xl">
+                <div class="text-[11px] font-mono font-bold text-alecto-teal uppercase tracking-widest mb-2.5 flex justify-between items-center border-b border-alecto-border/50 pb-1">
+                    <span>// 02 VOICE 1: PITCH / TONE SYNTHESIS</span>
+                    <button id="btn-trig-tone" class="px-2.5 py-0.5 bg-alecto-teal/20 hover:bg-alecto-teal/40 border border-alecto-teal text-alecto-teal text-[10px] font-mono rounded transition">TRIG VOICE 1</button>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-6 gap-2.5">
+                    <!-- Base Pitch / Tune -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v1Tune" data-min="20" data-max="800" data-val="95" data-step="1">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-teal rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">TUNE</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-teal">95 Hz</span>
+                    </div>
+
+                    <!-- Wave Morph -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v1WaveMorph" data-min="0" data-max="3" data-val="0" data-step="0.01">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-teal rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">MORPH</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-teal">SINE</span>
+                    </div>
+
+                    <!-- Pitch Env Depth -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v1PitchEnv" data-min="0" data-max="600" data-val="220" data-step="5">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-teal rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">P-ENV DEPTH</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-teal">220 Hz</span>
+                    </div>
+
+                    <!-- FM / Cross Mod Depth -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v1FM" data-min="0" data-max="400" data-val="50" data-step="2">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-teal rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">FM AMOUNT</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-teal">50</span>
+                    </div>
+
+                    <!-- VCF Filter Cutoff -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v1Cutoff" data-min="50" data-max="12000" data-val="3200" data-step="50">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-teal rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">VCF CUTOFF</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-teal">3200 Hz</span>
+                    </div>
+
+                    <!-- Tone Decay -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v1Decay" data-min="0.03" data-max="2.0" data-val="0.3" data-step="0.02">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-teal rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">V1 DECAY</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-teal">0.30s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VOICE 2: NOISE & PERCUSSIVE TRANSIENTS -->
+            <div class="bg-alecto-panel border border-alecto-border rounded-xl p-3.5 shadow-xl">
+                <div class="text-[11px] font-mono font-bold text-alecto-purple uppercase tracking-widest mb-2.5 flex justify-between items-center border-b border-alecto-border/50 pb-1">
+                    <span>// 03 VOICE 2: NOISE & ATTACK TRANSIENT</span>
+                    <button id="btn-trig-noise" class="px-2.5 py-0.5 bg-alecto-purple/20 hover:bg-alecto-purple/40 border border-alecto-purple text-alecto-purple text-[10px] font-mono rounded transition">TRIG VOICE 2</button>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-6 gap-2.5">
+                    <!-- Noise Mode Selector -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v2NoiseType" data-min="0" data-max="2" data-val="0" data-step="1">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-purple rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">NOISE TYPE</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-purple">WHITE</span>
+                    </div>
+
+                    <!-- Filter Cutoff -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v2Cutoff" data-min="100" data-max="14000" data-val="2800" data-step="100">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-purple rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">N-CUTOFF</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-purple">2800 Hz</span>
+                    </div>
+
+                    <!-- Filter Resonance -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v2Res" data-min="0.5" data-max="18" data-val="4" data-step="0.5">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-purple rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">RESONANCE</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-purple">4.0</span>
+                    </div>
+
+                    <!-- Transient Click Pitch -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v2ClickPitch" data-min="400" data-max="3000" data-val="1400" data-step="50">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-purple rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">CLICK TUNE</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-purple">1400 Hz</span>
+                    </div>
+
+                    <!-- Transient Click Volume -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v2ClickVol" data-min="0" data-max="1" data-val="0.6" data-step="0.05">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-purple rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">CLICK VOL</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-purple">60%</span>
+                    </div>
+
+                    <!-- Noise Decay -->
+                    <div class="flex flex-col items-center">
+                        <div class="knob-container relative w-12 h-12 cursor-pointer" data-param="v2Decay" data-min="0.02" data-max="1.5" data-val="0.18" data-step="0.02">
+                            <div class="knob-cap absolute inset-0 rounded-full bg-slate-800 border-2 border-alecto-border flex items-center justify-center">
+                                <div class="knob-pointer w-1 h-4 bg-alecto-purple rounded-full absolute top-1 transform origin-bottom"></div>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-mono mt-1.5 text-gray-300 font-bold">V2 DECAY</span>
+                        <span class="knob-val text-[10px] font-mono text-alecto-purple">0.18s</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT SECTION: DUAL POLYRHYTHMIC SEQUENCERS & PRESETS (4 COLS) -->
+        <div class="lg:col-span-4 flex flex-col gap-3.5">
+
+            <!-- SEQUENCER CLOCK A (VOICE 1 - TONE) -->
+            <div class="bg-alecto-panel border border-alecto-border rounded-xl p-3 shadow-xl">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center space-x-2">
+                        <div id="led-clock-a" class="w-3 h-3 rounded-full bg-slate-700"></div>
+                        <h2 class="text-[11px] font-mono font-bold text-alecto-teal uppercase tracking-wider">CLOCK A (VOICE 1)</h2>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <!-- Clock Division -->
+                        <select id="div-a" class="bg-black/60 border border-alecto-border text-alecto-teal text-[10px] font-mono rounded px-1 py-0.5 focus:outline-none">
+                            <option value="1">1/4</option>
+                            <option value="2" selected>1/8</option>
+                            <option value="4">1/16</option>
+                            <option value="3">1/8T</option>
+                        </select>
+                        <!-- Length -->
+                        <select id="steps-a" class="bg-black/60 border border-alecto-border text-alecto-teal text-[10px] font-mono rounded px-1 py-0.5 focus:outline-none">
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="7">7</option>
+                            <option value="8" selected>8</option>
+                            <option value="12">12</option>
+                            <option value="16">16</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Step Grid A -->
+                <div id="grid-seq-a" class="grid grid-cols-4 gap-1.5 my-2"></div>
+
+                <div class="flex justify-between items-center text-[9px] font-mono text-gray-400 border-t border-alecto-border/40 pt-1.5">
+                    <span>CLICK: OFF &rarr; ON &rarr; ACCENT</span>
+                    <button id="btn-clear-a" class="hover:text-white transition">CLEAR</button>
+                </div>
+            </div>
+
+            <!-- SEQUENCER CLOCK B (VOICE 2 - NOISE) -->
+            <div class="bg-alecto-panel border border-alecto-border rounded-xl p-3 shadow-xl">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center space-x-2">
+                        <div id="led-clock-b" class="w-3 h-3 rounded-full bg-slate-700"></div>
+                        <h2 class="text-[11px] font-mono font-bold text-alecto-purple uppercase tracking-wider">CLOCK B (VOICE 2)</h2>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <!-- Clock Division -->
+                        <select id="div-b" class="bg-black/60 border border-alecto-border text-alecto-purple text-[10px] font-mono rounded px-1 py-0.5 focus:outline-none">
+                            <option value="1">1/4</option>
+                            <option value="2" selected>1/8</option>
+                            <option value="4">1/16</option>
+                            <option value="3">1/8T</option>
+                        </select>
+                        <!-- Length -->
+                        <select id="steps-b" class="bg-black/60 border border-alecto-border text-alecto-purple text-[10px] font-mono rounded px-1 py-0.5 focus:outline-none">
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="7" selected>7</option>
+                            <option value="8">8</option>
+                            <option value="12">12</option>
+                            <option value="16">16</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Step Grid B -->
+                <div id="grid-seq-b" class="grid grid-cols-4 gap-1.5 my-2"></div>
+
+                <div class="flex justify-between items-center text-[9px] font-mono text-gray-400 border-t border-alecto-border/40 pt-1.5">
+                    <span>POLYRHYTHM PHASE-SHIFT</span>
+                    <button id="btn-clear-b" class="hover:text-white transition">CLEAR</button>
+                </div>
+            </div>
+
+            <!-- FACTORY PRESETS PANEL -->
+            <div class="bg-alecto-panel border border-alecto-border rounded-xl p-3 shadow-xl">
+                <span class="text-[10px] font-mono text-gray-400 font-bold block mb-2 uppercase">// FACTORY POLYRHYTHMIC PRESETS</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                    <button id="preset-techno" class="bg-alecto-module hover:bg-slate-700 border border-alecto-border text-[10px] text-gray-300 py-1.5 px-2 rounded font-mono text-left transition truncate">1. TECHNO KICK/CLACK</button>
+                    <button id="preset-industrial" class="bg-alecto-module hover:bg-slate-700 border border-alecto-border text-[10px] text-gray-300 py-1.5 px-2 rounded font-mono text-left transition truncate">2. INDUSTRIAL POLY</button>
+                    <button id="preset-fmbell" class="bg-alecto-module hover:bg-slate-700 border border-alecto-border text-[10px] text-gray-300 py-1.5 px-2 rounded font-mono text-left transition truncate">3. FM BELL PERC</button>
+                    <button id="preset-electro" class="bg-alecto-module hover:bg-slate-700 border border-alecto-border text-[10px] text-gray-300 py-1.5 px-2 rounded font-mono text-left transition truncate">4. ELECTRO SUB BOUNCE</button>
+                    <button id="preset-metallic" class="bg-alecto-module hover:bg-slate-700 border border-alecto-border text-[10px] text-gray-300 py-1.5 px-2 rounded font-mono text-left transition truncate sm:col-span-2">5. METALLIC NOISE GROOVE</button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="text-center py-2 text-[10px] text-gray-500 font-mono border-t border-alecto-border/40 mt-auto">
+        DREADBOX ALECTO CLONE • NATIVE WEB AUDIO API SYNTHESIS ENGINE
+    </footer>
+
+    <!-- AUDIO ENGINE & SYNTH LOGIC -->
+    <script>
+        // --- SYNTHESIZER STATE ---
+        const state = {
+            audioCtx: null,
+            analyserNode: null,
+            masterGainNode: null,
+            driveNode: null,
+            limiterNode: null,
+            isPlaying: false,
+
+            // Master controls
+            bpm: 124,
+            masterDecay: 0.90,
+            swing: 0,
+            voiceBlend: 0.5,
+            driveAmt: 0.25,
+
+            // Voice 1 (Tone)
+            v1Tune: 95,
+            v1WaveMorph: 0.0, // 0:Sine, 1:Tri, 2:Saw, 3:Square
+            v1PitchEnv: 220,
+            v1FM: 50,
+            v1Cutoff: 3200,
+            v1Decay: 0.30,
+
+            // Voice 2 (Noise)
+            v2NoiseType: 0, // 0:White, 1:Pink, 2:Crushed Grain
+            v2Cutoff: 2800,
+            v2Res: 4.0,
+            v2ClickPitch: 1400,
+            v2ClickVol: 0.60,
+            v2Decay: 0.18,
+
+            // Sequencer Clocks
+            stepsA: 8,
+            stepsB: 7,
+            divA: 2, // 1/8th notes
+            divB: 2,
+            currentStepA: 0,
+            currentStepB: 0,
+            
+            // Step States: 0=Off, 1=Trigger, 2=Accent
+            patternA: [2, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            patternB: [1, 0, 2, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+
+            // Noise Buffers
+            buffers: {
+                white: null,
+                pink: null,
+                crushed: null
+            }
+        };
+
+        // --- AUDIO INITIALIZATION ---
+        function initAudio() {
+            if (!state.audioCtx) {
+                const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+                state.audioCtx = new AudioCtxClass();
+
+                // Analyser Node for Scope
+                state.analyserNode = state.audioCtx.createAnalyser();
+                state.analyserNode.fftSize = 1024;
+
+                // Waveshaper Drive Node
+                state.driveNode = state.audioCtx.createWaveShaper();
+                updateDriveCurve();
+
+                // Safety Limiter Dynamics Compressor
+                state.limiterNode = state.audioCtx.createDynamicsCompressor();
+                state.limiterNode.threshold.setValueAtTime(-1.0, state.audioCtx.currentTime);
+                state.limiterNode.knee.setValueAtTime(0.0, state.audioCtx.currentTime);
+                state.limiterNode.ratio.setValueAtTime(20.0, state.audioCtx.currentTime);
+
+                // Master Gain
+                state.masterGainNode = state.audioCtx.createGain();
+                state.masterGainNode.gain.setValueAtTime(0.85, state.audioCtx.currentTime);
+
+                // Audio Routing Graph
+                state.driveNode.connect(state.limiterNode);
+                state.limiterNode.connect(state.analyserNode);
+                state.analyserNode.connect(state.masterGainNode);
+                state.masterGainNode.connect(state.audioCtx.destination);
+
+                // Build Noise Buffers
+                generateNoiseBuffers();
+
+                // Start Visualizer Loop
+                drawOscilloscope();
+            }
+
+            if (state.audioCtx.state === 'suspended') {
+                state.audioCtx.resume();
+            }
+        }
+
+        // Generate Analog-style Distortion Waveshaper Curve
+        function updateDriveCurve() {
+            if (!state.driveNode) return;
+            const k = state.driveAmt * 50;
+            const samples = 44100;
+            const curve = new Float32Array(samples);
+            const deg = Math.PI / 180;
+            
+            for (let i = 0; i < samples; ++i) {
+                const x = (i * 2) / samples - 1;
+                if (k === 0) {
+                    curve[i] = x;
+                } else {
+                    curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+                }
+            }
+            state.driveNode.curve = curve;
+        }
+
+        // Generate Custom Noise Buffers (White, Pink, Crushed)
+        function generateNoiseBuffers() {
+            const sr = state.audioCtx.sampleRate;
+            
+            // White Noise
+            const wBuf = state.audioCtx.createBuffer(1, sr, sr);
+            const wData = wBuf.getChannelData(0);
+            for (let i = 0; i < sr; i++) wData[i] = Math.random() * 2 - 1;
+            state.buffers.white = wBuf;
+
+            // Pink Noise
+            const pBuf = state.audioCtx.createBuffer(1, sr, sr);
+            const pData = pBuf.getChannelData(0);
+            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+            for (let i = 0; i < sr; i++) {
+                const white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                pData[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+                b6 = white * 0.115926;
+            }
+            state.buffers.pink = pBuf;
+
+            // Crushed Metallic Grain Noise
+            const cBuf = state.audioCtx.createBuffer(1, sr, sr);
+            const cData = cBuf.getChannelData(0);
+            let lastVal = 0;
+            for (let i = 0; i < sr; i++) {
+                if (i % 8 === 0) lastVal = (Math.random() > 0.5 ? 1 : -1) * Math.random();
+                cData[i] = lastVal;
+            }
+            state.buffers.crushed = cBuf;
+        }
+
+        // Custom Morphing Oscillator Helper
+        function createMorphedOscillator(context, time, morphVal, pitch) {
+            const osc = context.createOscillator();
+            
+            // Standard wave types based on morph threshold
+            if (morphVal < 0.8) {
+                osc.type = 'sine';
+            } else if (morphVal < 1.8) {
+                osc.type = 'triangle';
+            } else if (morphVal < 2.8) {
+                osc.type = 'sawtooth';
+            } else {
+                osc.type = 'square';
+            }
+            osc.frequency.setValueAtTime(pitch, time);
+            return osc;
+        }
+
+        // --- SYNTH VOICE TRIGGER ENGINE ---
+
+        // VOICE 1: Tone/Pitch Synth Voice
+        function triggerVoice1(time, velocity = 1.0) {
+            if (!state.audioCtx) return;
+            const now = time || state.audioCtx.currentTime;
+            const decay = Math.max(0.02, state.v1Decay * state.masterDecay);
+
+            // Master Oscillator
+            const osc = createMorphedOscillator(state.audioCtx, now, state.v1WaveMorph, state.v1Tune);
+
+            // FM Cross Modulator Osc
+            if (state.v1FM > 5) {
+                const fmOsc = state.audioCtx.createOscillator();
+                const fmGain = state.audioCtx.createGain();
+                fmOsc.frequency.setValueAtTime(state.v1Tune * 1.5, now);
+                fmGain.gain.setValueAtTime(state.v1FM * 2, now);
+                fmGain.gain.exponentialRampToValueAtTime(0.1, now + decay);
+                fmOsc.connect(fmGain);
+                fmGain.connect(osc.frequency);
+                fmOsc.start(now);
+                fmOsc.stop(now + decay + 0.05);
+            }
+
+            // Pitch Drop Envelope
+            if (state.v1PitchEnv > 0) {
+                const startPitch = state.v1Tune + state.v1PitchEnv * velocity;
+                osc.frequency.setValueAtTime(startPitch, now);
+                osc.frequency.exponentialRampToValueAtTime(Math.max(20, state.v1Tune), now + decay * 0.6);
+            }
+
+            // VCF Filter
+            const vcf = state.audioCtx.createBiquadFilter();
+            vcf.type = 'lowpass';
+            vcf.frequency.setValueAtTime(state.v1Cutoff, now);
+            vcf.frequency.exponentialRampToValueAtTime(Math.max(60, state.v1Cutoff * 0.2), now + decay);
+
+            // VCA Amp Envelope
+            const vca = state.audioCtx.createGain();
+            const toneVol = (1.0 - state.voiceBlend * 0.5) * velocity;
+            vca.gain.setValueAtTime(0.0001, now);
+            vca.gain.linearRampToValueAtTime(toneVol, now + 0.002);
+            vca.gain.exponentialRampToValueAtTime(0.0001, now + decay);
+
+            osc.connect(vcf);
+            vcf.connect(vca);
+            vca.connect(state.driveNode);
+
+            osc.start(now);
+            osc.stop(now + decay + 0.05);
+        }
+
+        // VOICE 2: Noise & Percussive Transient Voice
+        function triggerVoice2(time, velocity = 1.0) {
+            if (!state.audioCtx) return;
+            const now = time || state.audioCtx.currentTime;
+            const decay = Math.max(0.02, state.v2Decay * state.masterDecay);
+
+            // Select Noise Source Buffer
+            let buffer = state.buffers.white;
+            if (state.v2NoiseType === 1) buffer = state.buffers.pink;
+            else if (state.v2NoiseType === 2) buffer = state.buffers.crushed;
+
+            const noiseSrc = state.audioCtx.createBufferSource();
+            noiseSrc.buffer = buffer;
+
+            // Resonant Filter
+            const filter = state.audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(state.v2Cutoff, now);
+            filter.Q.setValueAtTime(state.v2Res, now);
+
+            // Noise VCA Envelope
+            const noiseGain = state.audioCtx.createGain();
+            const noiseVol = (state.voiceBlend * 0.9) * velocity;
+            noiseGain.gain.setValueAtTime(0.0001, now);
+            noiseGain.gain.linearRampToValueAtTime(noiseVol, now + 0.002);
+            noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + decay);
+
+            noiseSrc.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(state.driveNode);
+
+            noiseSrc.start(now);
+            noiseSrc.stop(now + decay + 0.05);
+
+            // Attack Transient Click / Pop Generator
+            if (state.v2ClickVol > 0.02) {
+                const clickOsc = state.audioCtx.createOscillator();
+                const clickGain = state.audioCtx.createGain();
+
+                clickOsc.type = 'square';
+                clickOsc.frequency.setValueAtTime(state.v2ClickPitch, now);
+                clickOsc.frequency.exponentialRampToValueAtTime(50, now + 0.008);
+
+                clickGain.gain.setValueAtTime(state.v2ClickVol * velocity, now);
+                clickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.01);
+
+                clickOsc.connect(clickGain);
+                clickGain.connect(state.driveNode);
+
+                clickOsc.start(now);
+                clickOsc.stop(now + 0.02);
+            }
+        }
+
+        // --- POLYRHYTHMIC SEQUENCER CLOCK SCHEDULER ---
+        let nextNoteTime = 0;
+        let timerID = null;
+
+        function scheduleStep(stepTime) {
+            // Clock A Trigger (Voice 1)
+            const valA = state.patternA[state.currentStepA];
+            if (valA > 0) {
+                const velA = valA === 2 ? 1.4 : 0.85; // Accent multiplier
+                triggerVoice1(stepTime, velA);
+            }
+
+            // Clock B Trigger (Voice 2)
+            const valB = state.patternB[state.currentStepB];
+            if (valB > 0) {
+                const velB = valB === 2 ? 1.4 : 0.85; // Accent multiplier
+                triggerVoice2(stepTime, velB);
+            }
+
+            // Flash UI Step Indicators
+            const stepA = state.currentStepA;
+            const stepB = state.currentStepB;
+            const delayMs = Math.max(0, (stepTime - state.audioCtx.currentTime) * 1000);
+
+            setTimeout(() => {
+                updateSequencerUI(stepA, stepB);
+            }, delayMs);
+        }
+
+        function nextStep() {
+            // Base 16th note timing duration
+            const base16th = 60.0 / state.bpm / 4;
+            
+            // Apply Swing Offset to Clock A
+            let swingOffset = 0;
+            if (state.currentStepA % 2 === 1) {
+                swingOffset = base16th * (state.swing / 100) * 0.5;
+            }
+
+            nextNoteTime += base16th + swingOffset;
+
+            // Advance Polyrhythmic Counters independently
+            state.currentStepA = (state.currentStepA + 1) % state.stepsA;
+            state.currentStepB = (state.currentStepB + 1) % state.stepsB;
+        }
+
+        function scheduler() {
+            while (nextNoteTime < state.audioCtx.currentTime + 0.1) {
+                scheduleStep(nextNoteTime);
+                nextStep();
+            }
+            if (state.isPlaying) {
+                timerID = setTimeout(scheduler, 25);
+            }
+        }
+
+        function startSequencer() {
+            if (state.isPlaying) return;
+            initAudio();
+            state.isPlaying = true;
+            state.currentStepA = 0;
+            state.currentStepB = 0;
+            nextNoteTime = state.audioCtx.currentTime + 0.05;
+            scheduler();
+
+            document.getElementById('power-led').className = 'w-3.5 h-3.5 rounded-full bg-alecto-green led-pulse-teal';
+            document.getElementById('btn-play').classList.remove('bg-alecto-green', 'hover:bg-emerald-500');
+            document.getElementById('btn-play').classList.add('bg-rose-600', 'hover:bg-rose-500');
+            document.getElementById('play-text').textContent = 'STOP';
+        }
+
+        function stopSequencer() {
+            state.isPlaying = false;
+            clearTimeout(timerID);
+
+            document.getElementById('power-led').className = 'w-3.5 h-3.5 rounded-full bg-alecto-orange led-pulse-orange';
+            document.getElementById('btn-play').classList.remove('bg-rose-600', 'hover:bg-rose-500');
+            document.getElementById('btn-play').classList.add('bg-alecto-green', 'hover:bg-emerald-500');
+            document.getElementById('play-text').textContent = 'PLAY';
+
+            clearLedHighlights();
+        }
+
+        // --- REALTIME OSCILLOSCOPE & FFT DISPLAY ---
+        function drawOscilloscope() {
+            const canvas = document.getElementById('scope-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.clientWidth;
+            const height = canvas.height = canvas.clientHeight;
+
+            requestAnimationFrame(drawOscilloscope);
+
+            if (!state.analyserNode) {
+                ctx.fillStyle = '#0a0b0d';
+                ctx.fillRect(0, 0, width, height);
+                return;
+            }
+
+            const bufferLength = state.analyserNode.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            state.analyserNode.getByteTimeDomainData(dataArray);
+
+            ctx.fillStyle = 'rgba(10, 11, 13, 0.35)';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = '#00e5ff';
+            ctx.beginPath();
+
+            const sliceWidth = width / bufferLength;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = (v * height) / 2;
+
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+
+                x += sliceWidth;
+            }
+
+            ctx.lineTo(width, height / 2);
+            ctx.stroke();
+        }
+
+        // --- UI RENDERERS & EVENT HANDLERS ---
+        function renderSequencers() {
+            // Render Clock A Grid
+            const gridA = document.getElementById('grid-seq-a');
+            gridA.innerHTML = '';
+            for (let i = 0; i < state.stepsA; i++) {
+                const btn = document.createElement('button');
+                const val = state.patternA[i];
+                let colorClasses = 'bg-alecto-bg border-alecto-border text-gray-500';
+                if (val === 1) colorClasses = 'bg-alecto-teal/80 border-alecto-teal text-slate-950 font-black';
+                else if (val === 2) colorClasses = 'bg-alecto-yellow border-alecto-yellow text-slate-950 font-black shadow-[0_0_10px_#ffcc00]';
+
+                btn.className = `h-9 rounded font-mono text-xs transition flex items-center justify-center border ${colorClasses}`;
+                btn.textContent = (i + 1).toString().padStart(2, '0');
+                btn.onclick = () => {
+                    state.patternA[i] = (state.patternA[i] + 1) % 3; // Toggle 0 -> 1 -> 2
+                    renderSequencers();
+                };
+                gridA.appendChild(btn);
+            }
+
+            // Render Clock B Grid
+            const gridB = document.getElementById('grid-seq-b');
+            gridB.innerHTML = '';
+            for (let i = 0; i < state.stepsB; i++) {
+                const btn = document.createElement('button');
+                const val = state.patternB[i];
+                let colorClasses = 'bg-alecto-bg border-alecto-border text-gray-500';
+                if (val === 1) colorClasses = 'bg-alecto-purple/80 border-alecto-purple text-white font-black';
+                else if (val === 2) colorClasses = 'bg-alecto-yellow border-alecto-yellow text-slate-950 font-black shadow-[0_0_10px_#ffcc00]';
+
+                btn.className = `h-9 rounded font-mono text-xs transition flex items-center justify-center border ${colorClasses}`;
+                btn.textContent = (i + 1).toString().padStart(2, '0');
+                btn.onclick = () => {
+                    state.patternB[i] = (state.patternB[i] + 1) % 3;
+                    renderSequencers();
+                };
+                gridB.appendChild(btn);
+            }
+        }
+
+        function updateSequencerUI(stepA, stepB) {
+            const btnsA = document.getElementById('grid-seq-a').children;
+            for (let i = 0; i < btnsA.length; i++) {
+                if (i === stepA) btnsA[i].classList.add('ring-2', 'ring-white', 'scale-105');
+                else btnsA[i].classList.remove('ring-2', 'ring-white', 'scale-105');
+            }
+
+            const btnsB = document.getElementById('grid-seq-b').children;
+            for (let i = 0; i < btnsB.length; i++) {
+                if (i === stepB) btnsB[i].classList.add('ring-2', 'ring-white', 'scale-105');
+                else btnsB[i].classList.remove('ring-2', 'ring-white', 'scale-105');
+            }
+
+            const ledA = document.getElementById('led-clock-a');
+            const ledB = document.getElementById('led-clock-b');
+            ledA.className = `w-3 h-3 rounded-full ${state.patternA[stepA] ? 'bg-alecto-teal led-pulse-teal' : 'bg-slate-700'}`;
+            ledB.className = `w-3 h-3 rounded-full ${state.patternB[stepB] ? 'bg-alecto-purple led-pulse-purple' : 'bg-slate-700'}`;
+        }
+
+        function clearLedHighlights() {
+            const btnsA = document.getElementById('grid-seq-a').children;
+            for (let b of btnsA) b.classList.remove('ring-2', 'ring-white', 'scale-105');
+            const btnsB = document.getElementById('grid-seq-b').children;
+            for (let b of btnsB) b.classList.remove('ring-2', 'ring-white', 'scale-105');
+        }
+
+        // Knob Interaction Logic
+        function setupKnobs() {
+            document.querySelectorAll('.knob-container').forEach(knob => {
+                let startY = 0;
+                let startVal = parseFloat(knob.dataset.val);
+
+                const updateKnobDisplay = (val) => {
+                    const min = parseFloat(knob.dataset.min);
+                    const max = parseFloat(knob.dataset.max);
+                    const param = knob.dataset.param;
+
+                    val = Math.max(min, Math.min(max, val));
+                    knob.dataset.val = val;
+                    state[param] = val;
+
+                    const pct = (val - min) / (max - min);
+                    const deg = -135 + (pct * 270);
+                    
+                    const pointer = knob.querySelector('.knob-pointer');
+                    if (pointer) pointer.style.transform = `rotate(${deg}deg)`;
+
+                    // Text values
+                    const label = knob.parentElement.querySelector('.knob-val');
+                    if (label) {
+                        if (param === 'bpm') label.textContent = `${Math.round(val)} BPM`;
+                        else if (param === 'masterDecay' || param === 'v1Decay' || param === 'v2Decay') label.textContent = `${val.toFixed(2)}s`;
+                        else if (param === 'swing' || param === 'driveAmt' || param === 'v2ClickVol') label.textContent = `${Math.round(val * 100)}%`;
+                        else if (param === 'voiceBlend') label.textContent = `${Math.round((1-val)*100)}/${Math.round(val*100)}`;
+                        else if (param === 'v1Tune' || param === 'v1PitchEnv' || param === 'v1Cutoff' || param === 'v2Cutoff' || param === 'v2ClickPitch') label.textContent = `${Math.round(val)} Hz`;
+                        else if (param === 'v1WaveMorph') {
+                            const waves = ['SINE', 'TRI', 'SAW', 'SQUARE'];
+                            label.textContent = waves[Math.min(3, Math.floor(val))];
+                        } else if (param === 'v2NoiseType') {
+                            const nTypes = ['WHITE', 'PINK', 'GRAIN'];
+                            label.textContent = nTypes[Math.min(2, Math.floor(val))];
+                        } else label.textContent = `${val.toFixed(1)}`;
+                    }
+
+                    if (param === 'bpm') document.getElementById('tempo-display').textContent = `${Math.round(val)} BPM`;
+                    if (param === 'driveAmt') updateDriveCurve();
+                };
+
+                updateKnobDisplay(startVal);
+
+                const onMouseDown = (e) => {
+                    startY = e.clientY || (e.touches && e.touches[0].clientY);
+                    startVal = parseFloat(knob.dataset.val);
+
+                    const onMove = (me) => {
+                        const currentY = me.clientY || (me.touches && me.touches[0].clientY);
+                        const deltaY = startY - currentY;
+                        const min = parseFloat(knob.dataset.min);
+                        const max = parseFloat(knob.dataset.max);
+                        const step = parseFloat(knob.dataset.step);
+
+                        // Precision fine-tuning with Shift key
+                        const sensitivity = me.shiftKey ? 600 : 150;
+                        let newVal = startVal + (deltaY / sensitivity) * (max - min);
+
+                        if (step >= 1) newVal = Math.round(newVal);
+                        updateKnobDisplay(newVal);
+                    };
+
+                    const onUp = () => {
+                        window.removeEventListener('mousemove', onMove);
+                        window.removeEventListener('mouseup', onUp);
+                        window.removeEventListener('touchmove', onMove);
+                        window.removeEventListener('touchend', onUp);
+                    };
+
+                    window.addEventListener('mousemove', onMove);
+                    window.addEventListener('mouseup', onUp);
+                    window.addEventListener('touchmove', onMove, { passive: false });
+                    window.addEventListener('touchend', onUp);
+                };
+
+                knob.addEventListener('mousedown', onMouseDown);
+                knob.addEventListener('touchstart', onMouseDown, { passive: true });
+            });
+        }
+
+        // Preset Manager
+        function loadPreset(idx) {
+            const presets = [
+                // 1. Techno Kick/Clack
+                { bpm:132, masterDecay:0.8, swing:0, voiceBlend:0.4, driveAmt:0.35, v1Tune:65, v1WaveMorph:0, v1PitchEnv:350, v1FM:20, v1Cutoff:4500, v1Decay:0.35, v2NoiseType:0, v2Cutoff:5200, v2Res:3, v2ClickPitch:1800, v2ClickVol:0.8, v2Decay:0.1, stepsA:8, stepsB:8, patternA:[2,0,0,0,1,0,0,0], patternB:[0,0,2,0,0,0,1,0] },
+                // 2. Industrial Polyrhythm
+                { bpm:126, masterDecay:1.1, swing:12, voiceBlend:0.6, driveAmt:0.6, v1Tune:140, v1WaveMorph:2, v1PitchEnv:180, v1FM:180, v1Cutoff:2200, v1Decay:0.25, v2NoiseType:2, v2Cutoff:3100, v2Res:7, v2ClickPitch:900, v2ClickVol:0.5, v2Decay:0.22, stepsA:8, stepsB:7, patternA:[2,0,1,0,0,2,0,0], patternB:[1,0,2,1,0,1,0] },
+                // 3. FM Bell Percussion
+                { bpm:118, masterDecay:1.4, swing:0, voiceBlend:0.3, driveAmt:0.1, v1Tune:380, v1WaveMorph:1, v1PitchEnv:40, v1FM:350, v1Cutoff:8000, v1Decay:0.6, v2NoiseType:1, v2Cutoff:1800, v2Res:2, v2ClickPitch:2400, v2ClickVol:0.2, v2Decay:0.3, stepsA:5, stepsB:8, patternA:[1,0,2,0,1], patternB:[0,1,0,1,0,0,1,0] },
+                // 4. Electro Sub Bounce
+                { bpm:128, masterDecay:0.7, swing:8, voiceBlend:0.45, driveAmt:0.2, v1Tune:45, v1WaveMorph:3, v1PitchEnv:220, v1FM:10, v1Cutoff:1800, v1Decay:0.4, v2NoiseType:0, v2Cutoff:6800, v2Res:1.5, v2ClickPitch:1200, v2ClickVol:0.7, v2Decay:0.08, stepsA:8, stepsB:8, patternA:[2,1,0,1,2,0,1,0], patternB:[0,0,1,0,0,1,0,1] },
+                // 5. Metallic Noise Groove
+                { bpm:135, masterDecay:0.85, swing:5, voiceBlend:0.8, driveAmt:0.45, v1Tune:180, v1WaveMorph:2, v1PitchEnv:90, v1FM:120, v1Cutoff:6500, v1Decay:0.15, v2NoiseType:2, v2Cutoff:9500, v2Res:12, v2ClickPitch:2800, v2ClickVol:0.9, v2Decay:0.25, stepsA:7, stepsB:5, patternA:[1,1,0,2,0,1,0], patternB:[2,0,1,0,2] }
+            ];
+
+            const p = presets[idx];
+            Object.assign(state, p);
+
+            document.getElementById('steps-a').value = state.stepsA;
+            document.getElementById('steps-b').value = state.stepsB;
+
+            // Sync Knobs
+            document.querySelectorAll('.knob-container').forEach(knob => {
+                const param = knob.dataset.param;
+                if (state[param] !== undefined) {
+                    knob.dataset.val = state[param];
+                    const min = parseFloat(knob.dataset.min);
+                    const max = parseFloat(knob.dataset.max);
+                    const pct = (state[param] - min) / (max - min);
+                    const deg = -135 + (pct * 270);
+                    const pointer = knob.querySelector('.knob-pointer');
+                    if (pointer) pointer.style.transform = `rotate(${deg}deg)`;
+
+                    const label = knob.parentElement.querySelector('.knob-val');
+                    if (label) {
+                        if (param === 'bpm') label.textContent = `${Math.round(state[param])} BPM`;
+                        else if (param === 'masterDecay' || param === 'v1Decay' || param === 'v2Decay') label.textContent = `${state[param].toFixed(2)}s`;
+                        else if (param === 'v1Tune' || param === 'v1Cutoff' || param === 'v2Cutoff') label.textContent = `${Math.round(state[param])} Hz`;
+                    }
+                }
+            });
+
+            document.getElementById('tempo-display').textContent = `${Math.round(state.bpm)} BPM`;
+            updateDriveCurve();
+            renderSequencers();
+        }
+
+        // --- ATTACH LISTENERS ---
+        window.onload = () => {
+            setupKnobs();
+            renderSequencers();
+
+            const btnPower = document.getElementById('btn-power');
+            const btnPlay = document.getElementById('btn-play');
+
+            btnPower.onclick = () => {
+                initAudio();
+                btnPower.classList.remove('bg-alecto-orange', 'hover:bg-orange-600');
+                btnPower.classList.add('bg-slate-700', 'text-gray-300');
+                document.getElementById('power-text').textContent = 'AUDIO READY';
+                document.getElementById('power-led').className = 'w-3.5 h-3.5 rounded-full bg-alecto-orange led-pulse-orange';
+
+                btnPlay.disabled = false;
+                btnPlay.classList.remove('opacity-50', 'cursor-not-allowed');
+            };
+
+            btnPlay.onclick = () => {
+                if (state.isPlaying) stopSequencer();
+                else startSequencer();
+            };
+
+            document.getElementById('btn-trig-tone').onclick = () => { initAudio(); triggerVoice1(); };
+            document.getElementById('btn-trig-noise').onclick = () => { initAudio(); triggerVoice2(); };
+
+            document.getElementById('steps-a').onchange = (e) => { state.stepsA = parseInt(e.target.value); renderSequencers(); };
+            document.getElementById('steps-b').onchange = (e) => { state.stepsB = parseInt(e.target.value); renderSequencers(); };
+
+            document.getElementById('btn-clear-a').onclick = () => { state.patternA.fill(0); renderSequencers(); };
+            document.getElementById('btn-clear-b').onclick = () => { state.patternB.fill(0); renderSequencers(); };
+
+            document.getElementById('preset-techno').onclick = () => loadPreset(0);
+            document.getElementById('preset-industrial').onclick = () => loadPreset(1);
+            document.getElementById('preset-fmbell').onclick = () => loadPreset(2);
+            document.getElementById('preset-electro').onclick = () => loadPreset(3);
+            document.getElementById('preset-metallic').onclick = () => loadPreset(4);
+        };
+    </script>
+</body>
+</html>
