@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dreadbox Alecto - 4 Voice Analog Percussion Synthesizer</title>
+    <title>Y2FO TECNO ACID - 4 Voice Percussion Synth</title>
     <style>
         :root {
             --bg-color: #121417;
@@ -43,7 +43,7 @@
             border: 2px solid var(--panel-border);
             border-radius: 12px;
             width: 100%;
-            max-width: 1350px;
+            max-width: 1400px;
             padding: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
         }
@@ -58,7 +58,7 @@
         }
 
         h1 {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             letter-spacing: 2px;
             color: #fff;
             text-transform: uppercase;
@@ -230,26 +230,14 @@
             padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             margin-top: 8px;
         }
 
-        .seq-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-        }
-
-        .seq-type-badge {
-            font-size: 0.6rem;
-            background: #232833;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: var(--accent-orange);
-            border: 1px solid #323844;
+        .seq-knobs-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
 
         .led-strip {
@@ -314,7 +302,7 @@
 
 <div class="synth-container">
     <header>
-        <h1>Dreadbox <span>Alecto</span> <span style="font-size:0.7rem; color:var(--text-dim);">4-Voice Analog Percussion</span></h1>
+        <h1>Y2FO <span>TECNO ACID</span> <span style="font-size:0.7rem; color:var(--text-dim);">4-Voice Percussion Synth</span></h1>
         <div class="master-controls">
             <button id="playBtn" class="btn-synth">▶ Play / Stop</button>
         </div>
@@ -323,7 +311,7 @@
     <!-- 4 Voices Layout -->
     <div class="voices-grid">
 
-        <!-- VOICE 1: KICK / BASS 1 -->
+        <!-- VOICE 1: KICK -->
         <div class="voice-strip">
             <div class="voice-header">
                 <span class="voice-title">Voice 1 (Kick)</span>
@@ -373,17 +361,24 @@
                     <span class="knob-value" id="val_v1_decay">0.60s</span>
                 </div>
             </div>
+
+            <!-- Sequencer Section -->
             <div class="seq-section">
-                <div class="seq-header">
-                    <span>Seq 1</span>
-                    <span class="seq-type-badge">Tipo 1</span>
-                </div>
-                <div class="knob-control" style="width: 100%;">
-                    <span class="knob-label">Pattern (0 - 10)</span>
-                    <div class="knob-container" data-param="seq1_pat" data-min="0" data-max="10" data-step="1" data-val="4" style="width:36px; height:36px;">
-                        <div class="knob"><div class="knob-pointer"></div></div>
+                <div class="seq-knobs-row">
+                    <div class="knob-control">
+                        <span class="knob-label">Pattern (0 - 16)</span>
+                        <div class="knob-container" data-param="seq1_pat" data-min="0" data-max="16" data-step="1" data-val="4" style="width:36px; height:36px;">
+                            <div class="knob"><div class="knob-pointer"></div></div>
+                        </div>
+                        <span class="knob-value" id="val_seq1_pat">Val: 4</span>
                     </div>
-                    <span class="knob-value" id="val_seq1_pat">Val: 4</span>
+                    <div class="knob-control">
+                        <span class="knob-label">Voice Vol</span>
+                        <div class="knob-container" data-param="v1_vol" data-min="0" data-max="1" data-step="0.01" data-val="0.85" style="width:36px; height:36px;">
+                            <div class="knob"><div class="knob-pointer"></div></div>
+                        </div>
+                        <span class="knob-value" id="val_v1_vol">85%</span>
+                    </div>
                 </div>
                 <div class="led-strip" id="leds_0">
                     <div class="led" id="l0_0"></div><div class="led" id="l0_1"></div><div class="led" id="l0_2"></div><div class="led" id="l0_3"></div>
@@ -392,7 +387,7 @@
             </div>
         </div>
 
-        <!-- VOICE 2: KICK / BASS 2 -->
+        <!-- VOICE 2: BASS -->
         <div class="voice-strip">
             <div class="voice-header">
                 <span class="voice-title">Voice 2 (Bass)</span>
@@ -442,17 +437,24 @@
                     <span class="knob-value" id="val_v2_decay">0.40s</span>
                 </div>
             </div>
+
+            <!-- Sequencer Section -->
             <div class="seq-section">
-                <div class="seq-header">
-                    <span>Seq 2</span>
-                    <span class="seq-type-badge">Tipo 1</span>
-                </div>
-                <div class="knob-control" style="width: 100%;">
-                    <span class="knob-label">Pattern (0 - 10)</span>
-                    <div class="knob-container" data-param="seq2_pat" data-min="0" data-max="10" data-step="1" data-val="3" style="width:36px; height:36px;">
-                        <div class="knob"><div class="knob-pointer"></div></div>
+                <div class="seq-knobs-row">
+                    <div class="knob-control">
+                        <span class="knob-label">Pattern (0 - 16)</span>
+                        <div class="knob-container" data-param="seq2_pat" data-min="0" data-max="16" data-step="1" data-val="11" style="width:36px; height:36px;">
+                            <div class="knob"><div class="knob-pointer"></div></div>
+                        </div>
+                        <span class="knob-value" id="val_seq2_pat">Val: 11</span>
                     </div>
-                    <span class="knob-value" id="val_seq2_pat">Val: 3</span>
+                    <div class="knob-control">
+                        <span class="knob-label">Voice Vol</span>
+                        <div class="knob-container" data-param="v2_vol" data-min="0" data-max="1" data-step="0.01" data-val="0.80" style="width:36px; height:36px;">
+                            <div class="knob"><div class="knob-pointer"></div></div>
+                        </div>
+                        <span class="knob-value" id="val_v2_vol">80%</span>
+                    </div>
                 </div>
                 <div class="led-strip" id="leds_1">
                     <div class="led" id="l1_0"></div><div class="led" id="l1_1"></div><div class="led" id="l1_2"></div><div class="led" id="l1_3"></div>
@@ -461,7 +463,7 @@
             </div>
         </div>
 
-        <!-- VOICE 3: PERC / TOM -->
+        <!-- VOICE 3: TOM / PERC -->
         <div class="voice-strip">
             <div class="voice-header">
                 <span class="voice-title">Voice 3 (Tom)</span>
@@ -511,17 +513,24 @@
                     <span class="knob-value" id="val_v3_decay">0.30s</span>
                 </div>
             </div>
+
+            <!-- Sequencer Section -->
             <div class="seq-section">
-                <div class="seq-header">
-                    <span>Seq 3</span>
-                    <span class="seq-type-badge">Tipo 2</span>
-                </div>
-                <div class="knob-control" style="width: 100%;">
-                    <span class="knob-label">Pattern (0 - 10)</span>
-                    <div class="knob-container" data-param="seq3_pat" data-min="0" data-max="10" data-step="1" data-val="2" style="width:36px; height:36px;">
-                        <div class="knob"><div class="knob-pointer"></div></div>
+                <div class="seq-knobs-row">
+                    <div class="knob-control">
+                        <span class="knob-label">Pattern (0 - 16)</span>
+                        <div class="knob-container" data-param="seq3_pat" data-min="0" data-max="16" data-step="1" data-val="13" style="width:36px; height:36px;">
+                            <div class="knob"><div class="knob-pointer"></div></div>
+                        </div>
+                        <span class="knob-value" id="val_seq3_pat">Val: 13</span>
                     </div>
-                    <span class="knob-value" id="val_seq3_pat">Val: 2</span>
+                    <div class="knob-control">
+                        <span class="knob-label">Voice Vol</span>
+                        <div class="knob-container" data-param="v3_vol" data-min="0" data-max="1" data-step="0.01" data-val="0.75" style="width:36px; height:36px;">
+                            <div class="knob"><div class="knob-pointer"></div></div>
+                        </div>
+                        <span class="knob-value" id="val_v3_vol">75%</span>
+                    </div>
                 </div>
                 <div class="led-strip" id="leds_2">
                     <div class="led" id="l2_0"></div><div class="led" id="l2_1"></div><div class="led" id="l2_2"></div><div class="led" id="l2_3"></div>
@@ -530,7 +539,7 @@
             </div>
         </div>
 
-        <!-- VOICE 4: HI-HAT / METAL -->
+        <!-- VOICE 4: HI-HAT -->
         <div class="voice-strip">
             <div class="voice-header">
                 <span class="voice-title">Voice 4 (Hi-Hat)</span>
@@ -580,17 +589,24 @@
                     <span class="knob-value" id="val_v4_decay">0.12s</span>
                 </div>
             </div>
+
+            <!-- Sequencer Section -->
             <div class="seq-section">
-                <div class="seq-header">
-                    <span>Seq 4</span>
-                    <span class="seq-type-badge">Tipo 2</span>
-                </div>
-                <div class="knob-control" style="width: 100%;">
-                    <span class="knob-label">Pattern (0 - 10)</span>
-                    <div class="knob-container" data-param="seq4_pat" data-min="0" data-max="10" data-step="1" data-val="3" style="width:36px; height:36px;">
-                        <div class="knob"><div class="knob-pointer"></div></div>
+                <div class="seq-knobs-row">
+                    <div class="knob-control">
+                        <span class="knob-label">Pattern (0 - 16)</span>
+                        <div class="knob-container" data-param="seq4_pat" data-min="0" data-max="16" data-step="1" data-val="3" style="width:36px; height:36px;">
+                            <div class="knob"><div class="knob-pointer"></div></div>
+                        </div>
+                        <span class="knob-value" id="val_seq4_pat">Val: 3</span>
                     </div>
-                    <span class="knob-value" id="val_seq4_pat">Val: 3</span>
+                    <div class="knob-control">
+                        <span class="knob-label">Voice Vol</span>
+                        <div class="knob-container" data-param="v4_vol" data-min="0" data-max="1" data-step="0.01" data-val="0.70" style="width:36px; height:36px;">
+                            <div class="knob"><div class="knob-pointer"></div></div>
+                        </div>
+                        <span class="knob-value" id="val_v4_vol">70%</span>
+                    </div>
                 </div>
                 <div class="led-strip" id="leds_3">
                     <div class="led" id="l3_0"></div><div class="led" id="l3_1"></div><div class="led" id="l3_2"></div><div class="led" id="l3_3"></div>
@@ -619,8 +635,8 @@
                 <span class="knob-value" id="val_master_vol">80%</span>
             </div>
         </div>
-        <div style="font-size:0.7rem; color:var(--text-dim);">
-            Dreadbox Alecto 4-Voice Browser Clone • Web Audio API
+        <div style="font-size:0.75rem; color:var(--text-dim); font-weight: bold;">
+            Y2FO TECNO ACID • Web Audio Engine
         </div>
     </div>
 </div>
@@ -628,43 +644,36 @@
 <script>
     // --- STATE & PARAMETERS ---
     const params = {
-        v1_tune: 65, v1_morph: 0, v1_pdecay: 0.3, v1_cutoff: 2500, v1_click: 0.4, v1_decay: 0.6,
-        v2_tune: 90, v2_morph: 1, v2_pdecay: 0.2, v2_cutoff: 3500, v2_click: 0.2, v2_decay: 0.4,
-        v3_tune: 220, v3_noise: 0.5, v3_pdecay: 0.15, v3_cutoff: 3500, v3_reso: 4.0, v3_decay: 0.3,
-        v4_tune: 1200, v4_fm: 450, v4_hp: 5000, v4_reso: 3.0, v4_drive: 2.5, v4_decay: 0.12,
-        seq1_pat: 4, seq2_pat: 3, seq3_pat: 2, seq4_pat: 3,
+        v1_tune: 65, v1_morph: 0, v1_pdecay: 0.3, v1_cutoff: 2500, v1_click: 0.4, v1_decay: 0.6, v1_vol: 0.85,
+        v2_tune: 90, v2_morph: 1, v2_pdecay: 0.2, v2_cutoff: 3500, v2_click: 0.2, v2_decay: 0.4, v2_vol: 0.80,
+        v3_tune: 220, v3_noise: 0.5, v3_pdecay: 0.15, v3_cutoff: 3500, v3_reso: 4.0, v3_decay: 0.3, v3_vol: 0.75,
+        v4_tune: 1200, v4_fm: 450, v4_hp: 5000, v4_reso: 3.0, v4_drive: 2.5, v4_decay: 0.12, v4_vol: 0.70,
+        seq1_pat: 4, seq2_pat: 11, seq3_pat: 13, seq4_pat: 3,
         master_bpm: 124, master_vol: 0.8
     };
 
     const mutes = [false, false, false, false];
 
-    // --- PATTERNS ---
-    const patternsType1 = {
-        0: [0,0,0,0, 0,0,0,0],
-        1: [1,0,0,0, 0,0,0,0],
-        2: [1,1,0,0, 0,0,0,0],
-        3: [1,0,1,0, 0,0,0,0],
-        4: [1,0,0,0, 1,0,0,0],
-        5: [1,0,0,0, 0,1,0,0],
-        6: [1,0,1,0, 0,0,1,0],
-        7: [1,0,0,1, 0,0,1,0],
-        8: [1,0,1,0, 1,0,1,0],
-        9: [1,1,0,1, 0,1,0,0],
-        10:[1,1,1,1, 1,1,1,1]
-    };
-
-    const patternsType2 = {
-        0: [0,0,0,0, 0,0,0,0],
-        1: [0,0,0,0, 1,0,0,0],
-        2: [1,1,0,0, 1,1,0,0],
-        3: [0,0,1,0, 0,0,1,0],
-        4: [0,0,1,0, 0,0,1,1],
-        5: [1,1,1,1, 1,1,1,1],
-        6: [1,1,1,1, 1,1,1,0],
-        7: [0,1,0,1, 0,1,0,1],
-        8: [1,0,0,1, 1,0,0,1],
-        9: [0,0,1,0, 1,0,1,0],
-        10:[1,0,1,1, 0,1,1,1]
+    // --- PATTERNS SYSTEM (0 - 16) INCLUSI TEMPI DISPARI / SINCOPATI ---
+    const patternBank = {
+        0:  [0,0,0,0, 0,0,0,0], // Mute
+        1:  [1,0,0,0, 0,0,0,0], // 1st Step / Downbeat
+        2:  [1,1,0,0, 0,0,0,0], // Double Strike
+        3:  [1,0,1,0, 0,0,0,0], // Off-beat 8th
+        4:  [1,0,0,0, 1,0,0,0], // 4-on-the-floor / Quarter
+        5:  [1,0,0,0, 0,1,0,0], // Half-step Punch
+        6:  [1,0,1,0, 0,0,1,0], // Syncopated Bass / Breakbeat
+        7:  [1,0,0,1, 0,0,1,0], // Afrobeat Triplet
+        8:  [1,0,1,0, 1,0,1,0], // 8th note Driving Pulse
+        9:  [1,1,0,1, 0,1,0,0], // Trap / UK Garage Bounce
+        10: [1,1,1,1, 1,1,1,1], // Full 16th Stream
+        // --- 6 NUOVI PATTERN PER TEMPI DISPARI / POLIRITMI ---
+        11: [1,0,0,1, 0,0,1,0], // 3/8 Triplet Accent (Step 1, 4, 7 attivi)
+        12: [1,0,0,0, 1,0,0,0], // 5/8 Quintuplet Pulse (Esclude Step 6, 7, 8)
+        13: [1,0,1,0, 1,0,0,0], // Odd 5-step Syncopation (Attivi 1, 3, 5 - vuoti 6..8)
+        14: [1,0,0,1, 0,1,0,0], // 7/8 Odd Metric Groove (Accento su 1, 4, 6)
+        15: [0,1,0,0, 1,0,1,0], // Off-Grid Acid Shift (Punti dispari 2, 5, 7)
+        16: [1,1,0,1, 1,0,1,0]  // Polyrhythmical Industrial Cut (Esclude Step 3 e 6)
     };
 
     // --- AUDIO ENGINE ---
@@ -688,7 +697,7 @@
     }
 
     // Sound Generator for Kick/Bass (Voice 1 & 2)
-    function triggerKickBass(time, tune, morph, pdecay, cutoff, clickLevel, decay) {
+    function triggerKickBass(time, tune, morph, pdecay, cutoff, clickLevel, decay, vol) {
         const osc = audioCtx.createOscillator();
         const filter = audioCtx.createBiquadFilter();
         const vca = audioCtx.createGain();
@@ -706,7 +715,7 @@
         filter.frequency.exponentialRampToValueAtTime(cutoff, time + decay);
         filter.Q.value = 3;
 
-        vca.gain.setValueAtTime(1.0, time);
+        vca.gain.setValueAtTime(vol, time);
         vca.gain.exponentialRampToValueAtTime(0.0001, time + decay);
 
         osc.connect(filter);
@@ -730,7 +739,7 @@
             noiseFilter.type = 'highpass';
             noiseFilter.frequency.value = 2000;
 
-            noiseGain.gain.setValueAtTime(clickLevel * 0.8, time);
+            noiseGain.gain.setValueAtTime(clickLevel * vol, time);
             noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 0.012);
 
             noise.connect(noiseFilter);
@@ -749,6 +758,7 @@
         const cutoff = params.v3_cutoff;
         const reso = params.v3_reso;
         const decay = params.v3_decay;
+        const vol = params.v3_vol;
 
         const osc = audioCtx.createOscillator();
         osc.type = 'triangle';
@@ -768,7 +778,7 @@
         filter.Q.value = reso;
 
         const vca = audioCtx.createGain();
-        vca.gain.setValueAtTime(0.8, time);
+        vca.gain.setValueAtTime(vol * 0.8, time);
         vca.gain.exponentialRampToValueAtTime(0.0001, time + decay);
 
         const mixGain = audioCtx.createGain();
@@ -792,6 +802,7 @@
         const hpCutoff = params.v4_hp;
         const reso = params.v4_reso;
         const decay = params.v4_decay;
+        const vol = params.v4_vol;
 
         const mod = audioCtx.createOscillator();
         const modGain = audioCtx.createGain();
@@ -813,7 +824,7 @@
         filter.Q.value = reso;
 
         const vca = audioCtx.createGain();
-        vca.gain.setValueAtTime(0.7, time);
+        vca.gain.setValueAtTime(vol * 0.7, time);
         vca.gain.exponentialRampToValueAtTime(0.0001, time + decay);
 
         carrier.connect(filter);
@@ -834,13 +845,13 @@
     }
 
     function scheduleNote(stepIndex, time) {
-        const pat1 = patternsType1[Math.round(params.seq1_pat)] || patternsType1[0];
-        const pat2 = patternsType1[Math.round(params.seq2_pat)] || patternsType1[0];
-        const pat3 = patternsType2[Math.round(params.seq3_pat)] || patternsType2[0];
-        const pat4 = patternsType2[Math.round(params.seq4_pat)] || patternsType2[0];
+        const pat1 = patternBank[Math.round(params.seq1_pat)] || patternBank[0];
+        const pat2 = patternBank[Math.round(params.seq2_pat)] || patternBank[0];
+        const pat3 = patternBank[Math.round(params.seq3_pat)] || patternBank[0];
+        const pat4 = patternBank[Math.round(params.seq4_pat)] || patternBank[0];
 
-        if (!mutes[0] && pat1[stepIndex]) triggerKickBass(time, params.v1_tune, params.v1_morph, params.v1_pdecay, params.v1_cutoff, params.v1_click, params.v1_decay);
-        if (!mutes[1] && pat2[stepIndex]) triggerKickBass(time, params.v2_tune, params.v2_morph, params.v2_pdecay, params.v2_cutoff, params.v2_click, params.v2_decay);
+        if (!mutes[0] && pat1[stepIndex]) triggerKickBass(time, params.v1_tune, params.v1_morph, params.v1_pdecay, params.v1_cutoff, params.v1_click, params.v1_decay, params.v1_vol);
+        if (!mutes[1] && pat2[stepIndex]) triggerKickBass(time, params.v2_tune, params.v2_morph, params.v2_pdecay, params.v2_cutoff, params.v2_click, params.v2_decay, params.v2_vol);
         if (!mutes[2] && pat3[stepIndex]) triggerTom(time);
         if (!mutes[3] && pat4[stepIndex]) triggerMetal(time);
 
@@ -893,10 +904,10 @@
     function updateLEDs(activeStep) {
         for (let v = 0; v < 4; v++) {
             let pat = [];
-            if (v === 0) pat = patternsType1[Math.round(params.seq1_pat)] || patternsType1[0];
-            if (v === 1) pat = patternsType1[Math.round(params.seq2_pat)] || patternsType1[0];
-            if (v === 2) pat = patternsType2[Math.round(params.seq3_pat)] || patternsType2[0];
-            if (v === 3) pat = patternsType2[Math.round(params.seq4_pat)] || patternsType2[0];
+            if (v === 0) pat = patternBank[Math.round(params.seq1_pat)] || patternBank[0];
+            if (v === 1) pat = patternBank[Math.round(params.seq2_pat)] || patternBank[0];
+            if (v === 2) pat = patternBank[Math.round(params.seq3_pat)] || patternBank[0];
+            if (v === 3) pat = patternBank[Math.round(params.seq4_pat)] || patternBank[0];
 
             for (let s = 0; s < 8; s++) {
                 const led = document.getElementById(`l${v}_${s}`);
@@ -938,7 +949,7 @@
         function updateKnobVisual() {
             const percent = (val - min) / (max - min);
             const deg = percent * 270;
-            const pointerDeg = deg - 135; // Centra la tacca bianca sull'arco
+            const pointerDeg = deg - 135;
             
             knob.style.setProperty('--deg', `${deg}deg`);
             if (pointer) {
