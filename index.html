@@ -373,11 +373,11 @@
             <div class="seq-section">
                 <div class="seq-knobs-row">
                     <div class="knob-control">
-                        <span class="knob-label">Pattern (0 - 14)</span>
-                        <div class="knob-container" data-param="seq1_pat" data-min="0" data-max="14" data-step="1" data-val="4" style="width:36px; height:36px;">
+                        <span class="knob-label">Pattern (0 - 16)</span>
+                        <div class="knob-container" data-param="seq1_pat" data-min="0" data-max="16" data-step="1" data-val="5" style="width:36px; height:36px;">
                             <div class="knob"><div class="knob-pointer"></div></div>
                         </div>
-                        <span class="knob-value" id="val_seq1_pat">Val: 4</span>
+                        <span class="knob-value" id="val_seq1_pat">Val: 5</span>
                     </div>
                     <div class="knob-control">
                         <span class="knob-label">Voice Vol</span>
@@ -410,7 +410,7 @@
                 </div>
                 <div class="knob-control">
                     <span class="knob-label">Waveform</span>
-                    <div class="knob-container" data-param="v2_wave" data-min="0" data-max="1" data-step="1" data-val="0">
+                    <div class="knob-container" data-param="v2_wave" data-min="0" data-max="3" data-step="1" data-val="0">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
                     <span class="knob-value" id="val_v2_wave">Saw</span>
@@ -449,11 +449,11 @@
             <div class="seq-section">
                 <div class="seq-knobs-row">
                     <div class="knob-control">
-                        <span class="knob-label">Pattern (0 - 14)</span>
-                        <div class="knob-container" data-param="seq2_pat" data-min="0" data-max="14" data-step="1" data-val="6" style="width:36px; height:36px;">
+                        <span class="knob-label">Pattern (0 - 16)</span>
+                        <div class="knob-container" data-param="seq2_pat" data-min="0" data-max="16" data-step="1" data-val="7" style="width:36px; height:36px;">
                             <div class="knob"><div class="knob-pointer"></div></div>
                         </div>
-                        <span class="knob-value" id="val_seq2_pat">Val: 6</span>
+                        <span class="knob-value" id="val_seq2_pat">Val: 7</span>
                     </div>
                     <div class="knob-control">
                         <span class="knob-label">Voice Vol</span>
@@ -525,8 +525,8 @@
             <div class="seq-section">
                 <div class="seq-knobs-row">
                     <div class="knob-control">
-                        <span class="knob-label">Pattern (0 - 14)</span>
-                        <div class="knob-container" data-param="seq3_pat" data-min="0" data-max="14" data-step="1" data-val="3" style="width:36px; height:36px;">
+                        <span class="knob-label">Pattern (0 - 16)</span>
+                        <div class="knob-container" data-param="seq3_pat" data-min="0" data-max="16" data-step="1" data-val="3" style="width:36px; height:36px;">
                             <div class="knob"><div class="knob-pointer"></div></div>
                         </div>
                         <span class="knob-value" id="val_seq3_pat">Val: 3</span>
@@ -601,11 +601,11 @@
             <div class="seq-section">
                 <div class="seq-knobs-row">
                     <div class="knob-control">
-                        <span class="knob-label">Pattern (0 - 14)</span>
-                        <div class="knob-container" data-param="seq4_pat" data-min="0" data-max="14" data-step="1" data-val="7" style="width:36px; height:36px;">
+                        <span class="knob-label">Pattern (0 - 16)</span>
+                        <div class="knob-container" data-param="seq4_pat" data-min="0" data-max="16" data-step="1" data-val="8" style="width:36px; height:36px;">
                             <div class="knob"><div class="knob-pointer"></div></div>
                         </div>
-                        <span class="knob-value" id="val_seq4_pat">Val: 7</span>
+                        <span class="knob-value" id="val_seq4_pat">Val: 8</span>
                     </div>
                     <div class="knob-control">
                         <span class="knob-label">Voice Vol</span>
@@ -655,47 +655,51 @@
         v2_tune: 110, v2_wave: 0, v2_cutoff: 1500, v2_reso: 12, v2_fenv: 2500, v2_decay: 0.3, v2_vol: 0.75,
         v3_tune: 180, v3_noise: 0.25, v3_pdecay: 0.12, v3_cutoff: 2500, v3_reso: 5, v3_decay: 0.35, v3_vol: 0.75,
         v4_fm: 1800, v4_noise: 0.8, v4_hp: 7000, v4_reso: 4, v4_drive: 2, v4_decay: 0.08, v4_vol: 0.65,
-        seq1_pat: 4, seq2_pat: 6, seq3_pat: 3, seq4_pat: 7,
+        seq1_pat: 5, seq2_pat: 7, seq3_pat: 3, seq4_pat: 8,
         master_bpm: 124, master_vol: 0.8
     };
 
     const mutes = [false, false, false, false];
 
-    // --- PATTERNS BANK ---
+    // --- COMPLETE 16 PATTERNS BANK ---
     const type1Patterns = {
         0:  { length: 8, steps: [0,0,0,0, 0,0,0,0] },
-        1:  { length: 8, steps: [1,0,0,0, 0,0,0,0] },
-        2:  { length: 8, steps: [1,1,0,0, 0,0,0,0] },
-        3:  { length: 8, steps: [1,0,1,0, 0,0,0,0] },
-        4:  { length: 8, steps: [1,0,0,0, 1,0,0,0] }, // 4-on-the-floor Kick
-        5:  { length: 8, steps: [1,0,0,0, 0,1,0,0] },
-        6:  { length: 8, steps: [0,0,1,0, 0,0,1,0] }, // Step 3 e 7
-        7:  { length: 8, steps: [1,0,0,1, 0,0,1,0] },
-        8:  { length: 8, steps: [1,0,0,1, 0,0,1,0] },
-        9:  { length: 8, steps: [1,0,1,0, 1,0,1,0] },
-        10: { length: 7, steps: [1,0,1,0, 1,0,1, 0] }, // 7 Step Odd
-        11: { length: 7, steps: [1,0,0,1, 0,1,0, 0] },
-        12: { length: 5, steps: [1,0,1,0, 1, 0,0,0] }, // 5 Step Odd
-        13: { length: 6, steps: [1,0,0,1, 0,1, 0,0] }, // 6 Step Triplet
-        14: { length: 8, steps: [1,1,1,1, 1,1,1,1] }
+        1:  { length: 8, steps: [1,0,0,0, 0,0,0,0] }, // Val 1: LED 1
+        2:  { length: 8, steps: [1,1,0,0, 0,0,0,0] }, // Val 2: LED 1, 2
+        3:  { length: 8, steps: [1,0,1,0, 0,0,0,0] }, // Val 3: LED 1, 3
+        4:  { length: 8, steps: [1,0,0,0, 1,0,0,0] }, // Val 4: LED 1, 5
+        5:  { length: 8, steps: [1,0,0,0, 0,1,0,0] }, // Val 5: LED 1, 6
+        6:  { length: 8, steps: [0,0,1,0, 0,0,1,0] }, // Val 6: LED 3, 7
+        7:  { length: 8, steps: [1,0,0,1, 0,0,1,0] }, // Val 7: LED 1, 4, 7
+        8:  { length: 8, steps: [1,0,0,1, 0,0,1,0] }, // Val 8: LED 1, 4, 7
+        9:  { length: 8, steps: [1,0,1,0, 1,0,1,0] }, // Val 9: 8th Driving Bass
+        10: { length: 8, steps: [1,1,0,1, 0,1,0,0] }, // Val 10: Syncopated Trap
+        11: { length: 7, steps: [1,0,1,0, 1,0,1, 0] }, // Val 11: 7 Step (7/8) - LED 8 disattivato (Rosso)
+        12: { length: 7, steps: [1,0,0,1, 0,1,0, 0] }, // Val 12: 7 Step Polyrhythm
+        13: { length: 5, steps: [1,0,1,0, 1, 0,0,0] }, // Val 13: 5 Step (5/8) - LED 6..8 disattivato (Rosso)
+        14: { length: 6, steps: [1,0,0,1, 0,1, 0,0] }, // Val 14: 6 Step Triplet - LED 7..8 disattivato (Rosso)
+        15: { length: 8, steps: [0,1,0,0, 1,0,1,0] }, // Val 15: Acid Off-grid
+        16: { length: 8, steps: [1,1,1,1, 1,1,1,1] }  // Val 16: Full 16th Roll
     };
 
     const type2Patterns = {
         0:  { length: 8, steps: [0,0,0,0, 0,0,0,0] },
-        1:  { length: 8, steps: [1,0,0,0, 1,0,0,0] },
-        2:  { length: 8, steps: [1,1,0,0, 1,1,0,0] },
-        3:  { length: 8, steps: [0,0,1,0, 0,0,1,0] },
-        4:  { length: 8, steps: [0,0,1,0, 0,0,1,1] },
-        5:  { length: 8, steps: [1,1,1,1, 1,1,1,1] },
-        6:  { length: 8, steps: [1,1,1,1, 1,1,1,0] },
-        7:  { length: 8, steps: [0,1,0,1, 0,1,0,1] }, // Off-beat Hat/Shaker
-        8:  { length: 8, steps: [1,0,0,1, 1,0,0,1] },
-        9:  { length: 8, steps: [0,0,1,0, 1,0,1,0] },
-        10: { length: 7, steps: [0,0,1,0, 1,0,1, 0] },
-        11: { length: 7, steps: [1,1,0,1, 0,1,1, 0] },
-        12: { length: 5, steps: [0,0,1,0, 1, 0,0,0] },
-        13: { length: 6, steps: [1,0,1,0, 1,1, 0,0] },
-        14: { length: 8, steps: [1,0,1,1, 0,1,1,1] }
+        1:  { length: 8, steps: [1,0,0,0, 1,0,0,0] }, // Val 1: LED 1, 5
+        2:  { length: 8, steps: [1,1,0,0, 1,1,0,0] }, // Val 2: LED 1, 2, 5, 6
+        3:  { length: 8, steps: [0,0,1,0, 0,0,1,0] }, // Val 3: LED 3, 7
+        4:  { length: 8, steps: [1,0,0,0, 1,0,0,0] }, // Val 4: LED 1, 5
+        5:  { length: 8, steps: [0,0,1,0, 0,0,1,1] }, // Val 5: LED 3, 7, 8
+        6:  { length: 8, steps: [1,1,1,1, 1,1,1,1] }, // Val 6: Tutti i LED
+        7:  { length: 8, steps: [1,1,1,1, 1,1,1,0] }, // Val 7: LED 1..7
+        8:  { length: 8, steps: [0,1,0,1, 0,1,0,1] }, // Val 8: Off-beat Shaker (2,4,6,8)
+        9:  { length: 8, steps: [1,0,0,1, 1,0,0,1] }, // Val 9: Afro-Cuban Poly
+        10: { length: 8, steps: [0,0,1,0, 1,0,1,0] }, // Val 10: Latin Sync
+        11: { length: 7, steps: [0,0,1,0, 1,0,1, 0] }, // Val 11: 7 Step (7/8) - LED 8 disattivato (Rosso)
+        12: { length: 7, steps: [1,1,0,1, 0,1,1, 0] }, // Val 12: 7 Step Percussion Cut
+        13: { length: 5, steps: [0,0,1,0, 1, 0,0,0] }, // Val 13: 5 Step Percussion - LED 6..8 disattivato (Rosso)
+        14: { length: 6, steps: [1,0,1,0, 1,1, 0,0] }, // Val 14: 6 Step Triplet Sync - LED 7..8 disattivato (Rosso)
+        15: { length: 8, steps: [1,0,1,1, 0,1,1,1] }, // Val 15: Industrial Groove
+        16: { length: 8, steps: [1,1,1,1, 1,1,1,1] }  // Val 16: Full Stream
     };
 
     // --- AUDIO ENGINE ---
@@ -737,11 +741,10 @@
         osc.type = 'sine';
         sub.type = 'sine';
 
-        // Pitch Envelope per il punch iniziale
         osc.frequency.setValueAtTime(tune * 3.5, time);
         osc.frequency.exponentialRampToValueAtTime(tune, time + pdecay);
 
-        sub.frequency.setValueAtTime(tune * 0.5, time); // Sub ottava inferiore fissa
+        sub.frequency.setValueAtTime(tune * 0.5, time);
 
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(cutoff, time);
@@ -764,7 +767,6 @@
         osc.stop(time + decay + 0.05);
         sub.stop(time + decay + 0.05);
 
-        // Click Transiente pulito
         if (clickLevel > 0.02) {
             const bufferSize = audioCtx.sampleRate * 0.012;
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -788,39 +790,58 @@
         }
     }
 
-    // --- VOICE 2: ACID BASS SYNTH ENGINE ---
+    // --- VOICE 2: ACID BASS SYNTH ENGINE (WITH SINE, SAW, SQUARE, SUPERSAW) ---
     function triggerAcidBass(time) {
         if (mutes[1]) return;
         const tune = params.v2_tune;
-        const waveType = params.v2_wave === 0 ? 'sawtooth' : 'square';
+        const waveSel = Math.round(params.v2_wave);
         const cutoff = params.v2_cutoff;
         const reso = params.v2_reso;
         const fenvAmount = params.v2_fenv;
         const decay = params.v2_decay;
         const vol = params.v2_vol;
 
-        const osc = audioCtx.createOscillator();
         const filter = audioCtx.createBiquadFilter();
         const vca = audioCtx.createGain();
 
-        osc.type = waveType;
-        osc.frequency.setValueAtTime(tune, time);
-
-        // Filtro Passa-Basso risonante con Inviluppo di Cutoff dedicato (Acid Squelch)
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(cutoff + fenvAmount, time);
-        filter.frequency.exponentialRampToValueAtTime(Math.max(100, cutoff), time + decay * 0.7);
+        filter.frequency.exponentialRampToValueAtTime(Math.max(80, cutoff), time + decay * 0.7);
         filter.Q.value = reso;
 
         vca.gain.setValueAtTime(vol * 0.85, time);
         vca.gain.exponentialRampToValueAtTime(0.0001, time + decay);
 
-        osc.connect(filter);
+        if (waveSel === 3) {
+            // SUPERSAW (Doppi oscillatori detunati per suono cicciotto)
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            osc1.type = 'sawtooth';
+            osc2.type = 'sawtooth';
+            osc1.frequency.setValueAtTime(tune * 0.995, time);
+            osc2.frequency.setValueAtTime(tune * 1.005, time);
+
+            osc1.connect(filter);
+            osc2.connect(filter);
+            osc1.start(time);
+            osc2.start(time);
+            osc1.stop(time + decay + 0.05);
+            osc2.stop(time + decay + 0.05);
+        } else {
+            // SAW, SQUARE, SINE
+            const osc = audioCtx.createOscillator();
+            if (waveSel === 0) osc.type = 'sawtooth';
+            else if (waveSel === 1) osc.type = 'square';
+            else if (waveSel === 2) osc.type = 'sine';
+
+            osc.frequency.setValueAtTime(tune, time);
+            osc.connect(filter);
+            osc.start(time);
+            osc.stop(time + decay + 0.05);
+        }
+
         filter.connect(vca);
         vca.connect(masterGain);
-
-        osc.start(time);
-        osc.stop(time + decay + 0.05);
     }
 
     // --- VOICE 3: TOM / PERCUSSION ENGINE ---
@@ -876,11 +897,9 @@
         const noiseMix = params.v4_noise;
         const hpCutoff = params.v4_hp;
         const reso = params.v4_reso;
-        const drive = params.v4_drive;
         const decay = params.v4_decay;
         const vol = params.v4_vol;
 
-        // Sintesi FM metallica per il corpo del piatto
         const mod = audioCtx.createOscillator();
         const modGain = audioCtx.createGain();
         const carrier = audioCtx.createOscillator();
@@ -895,7 +914,6 @@
         mod.connect(modGain);
         modGain.connect(carrier.frequency);
 
-        // Rumore bianco/rosa per l'aria del charleston
         const bufferSize = audioCtx.sampleRate * decay;
         const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
         const data = buffer.getChannelData(0);
@@ -906,7 +924,6 @@
         const nGain = audioCtx.createGain();
         nGain.gain.value = noiseMix;
 
-        // Filtro Passa-Alto ad altissima pendenza per isolare solo lo "shhh"
         const filter = audioCtx.createBiquadFilter();
         filter.type = 'highpass';
         filter.frequency.value = hpCutoff;
@@ -1016,7 +1033,7 @@
                 led.className = 'led';
 
                 if (s >= patData.length) {
-                    led.classList.add('disabled-step'); // Rosso per tempi dispari
+                    led.classList.add('disabled-step');
                 } else {
                     if (patData.steps[s]) led.classList.add('lit');
                     if (s === activeStepForVoice) led.classList.add('active-step');
@@ -1061,7 +1078,11 @@
                 } else if (param.includes('decay') || param.includes('pdecay')) {
                     valDisplay.innerText = `${val.toFixed(2)}s`;
                 } else if (param.includes('wave')) {
-                    valDisplay.innerText = val === 0 ? 'Saw' : 'Square';
+                    const w = Math.round(val);
+                    if (w === 0) valDisplay.innerText = 'Saw';
+                    else if (w === 1) valDisplay.innerText = 'Square';
+                    else if (w === 2) valDisplay.innerText = 'Sine';
+                    else if (w === 3) valDisplay.innerText = 'SuperSaw';
                 } else if (param.includes('_pat')) {
                     valDisplay.innerText = `Val: ${Math.round(val)}`;
                 } else if (param.includes('vol') || param.includes('click') || param.includes('noise') || param.includes('sub')) {
