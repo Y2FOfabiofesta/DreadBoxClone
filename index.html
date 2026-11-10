@@ -669,7 +669,7 @@
         3:  { length: 8, steps: [1,0,1,0, 0,0,0,0] }, // Val 3: LED 1, 3
         4:  { length: 8, steps: [1,0,0,0, 1,0,0,0] }, // Val 4: LED 1, 4 (4-on-floor 8th)
         5:  { length: 8, steps: [1,0,0,0, 0,1,0,0] }, // Val 5: LED 1, 5
-        6:  { length: 8, steps: [1,0,1,0, 0,0,1,0] }, // Val 6: LED 1, 3, 7
+        6:  { length: 8, steps: [0,0,1,0, 0,0,1,0] }, // Val 6: LED 3, 7 (Aggiornato)
         7:  { length: 8, steps: [1,0,0,1, 0,0,1,0] }, // Val 7: LED 1, 4, 7
         8:  { length: 8, steps: [1,0,0,1, 0,0,1,0] }, // Val 8: LED 1, 4, 7
         9:  { length: 8, steps: [1,0,1,0, 1,0,1,0] }, // Val 9: 8th Driving Bass
@@ -872,7 +872,6 @@
         const p3 = type2Patterns[Math.round(params.seq3_pat)] || type2Patterns[0];
         const p4 = type2Patterns[Math.round(params.seq4_pat)] || type2Patterns[0];
 
-        // Indice di step indipendente in base alla lunghezza del tempo (5, 6, 7 o 8)
         const step1 = stepTick % p1.length;
         const step2 = stepTick % p2.length;
         const step3 = stepTick % p3.length;
@@ -928,7 +927,7 @@
         }
     }
 
-    // --- LED VIEWS CON SUPPORTO PER LED ROSSI (STEP DISABILITATI) ---
+    // --- LED VIEWS ---
     function updateLEDs(activeSteps) {
         const currentPats = [
             type1Patterns[Math.round(params.seq1_pat)] || type1Patterns[0],
@@ -947,7 +946,6 @@
                 led.className = 'led';
 
                 if (s >= patData.length) {
-                    // LED ESCLUSO DAL TEMPO DISPARI (DIVENTA ROSSO)
                     led.classList.add('disabled-step');
                 } else {
                     if (patData.steps[s]) led.classList.add('lit');
