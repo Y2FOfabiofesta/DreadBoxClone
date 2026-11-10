@@ -410,6 +410,7 @@
                 </div>
                 <div class="knob-control">
                     <span class="knob-label">Waveform</span>
+                    <!-- FIX: data-max="3" per permettere 4 valori: 0=Saw, 1=Square, 2=Sine, 3=SuperSaw -->
                     <div class="knob-container" data-param="v2_wave" data-min="0" data-max="3" data-step="1" data-val="0">
                         <div class="knob"><div class="knob-pointer"></div></div>
                     </div>
@@ -828,7 +829,7 @@
             osc1.stop(time + decay + 0.05);
             osc2.stop(time + decay + 0.05);
         } else {
-            // SAW, SQUARE, SINE
+            // SAW (0), SQUARE (1), SINE (2)
             const osc = audioCtx.createOscillator();
             if (waveSel === 0) osc.type = 'sawtooth';
             else if (waveSel === 1) osc.type = 'square';
